@@ -19,6 +19,7 @@
         .video-placeholder.show { display: block; padding-bottom: 56.25%; }
         .btn-next { background: var(--primary); color: white; border: none; padding: 22px; border-radius: 14px; font-weight: 900; cursor: pointer; width: 100%; font-size: 20px; text-transform: uppercase; transition: all 0.3s; box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3); position: sticky; bottom: 0; z-index: 999; }
         .btn-next:hover { transform: scale(1.02); }
+        .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
         .screen { display: none; }
         .screen.active { display: block; }
         .progress-bar { height: 4px; background: var(--border); border-radius: 10px; margin-bottom: 30px; overflow: hidden; }
@@ -49,7 +50,7 @@
 </head>
 <body>
     <div class="quiz-card">
-        <!-- Tela 1: Mini VSL Wistia -->
+        <!-- Tela 1: VSL -->
         <div id="s-0" class="screen active">
             <div class="fixed-header">PROTOCOLO TRIPE - REVELADO</div>
             <h1 class="headline">O SEGREDO DOS ATORES PÔRNO PARA ATIVAR O CRESCIMENTO DO PÊNIS EM 45 DIAS.</h1>
@@ -94,14 +95,14 @@
             <button class="btn-next" onclick="next()" id="start-quiz-btn" disabled>INICIAR AVALIAÇÃO AGORA</button>
         </div>
 
-        <!-- Tela 3: Quiz Profissional (15 Perguntas) -->
+        <!-- Tela 3: Quiz (15 Perguntas) -->
         <div id="s-2" class="screen">
             <div class="fixed-header">AVALIAÇÃO CLÍNICA - ETAPA <span id="q-num">1</span>/15</div>
             <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
             <div id="q-box"></div>
         </div>
 
-        <!-- Tela 4: Processamento de Resultados -->
+        <!-- Tela 4: Processamento -->
         <div id="s-3" class="screen">
             <div class="fixed-header">SISTEMA DE DIAGNÓSTICO AVANÇADO</div>
             <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 15px;">ANALISANDO DADOS BIOMÉTRICOS...</h2>
@@ -135,7 +136,7 @@
             </div>
         </div>
 
-        <!-- Tela 5: Bloco de Oferta Final -->
+        <!-- Tela 5: Oferta Final -->
         <div id="s-4" class="screen">
             <div class="fixed-header">ACESSO LIBERADO AO PROTOCOLO</div>
             <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 10px;">SEU PLANO PERSONALIZADO ESTÁ PRONTO!</h2>
@@ -163,35 +164,21 @@
         </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, set, update, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
+    <script>
         // ==========================================
-        // CONFIGURAÇÃO - PROJETO: quizeriv
+        // CONFIGURAÇÃO - CAMBIA SOLO ESTA LÍNEA
         // ==========================================
-        const firebaseConfig = {
-            apiKey: "AIzaSyBSsTJ7iI5jMzOjPd30d2Yo08Pfg-6Bz6E",
-            authDomain: "meuquiz-fc269.firebaseapp.com",
-            databaseURL: "https://meuquiz-fc269-default-rtdb.firebaseio.com",
-            projectId: "meuquiz-fc269",
-            storageBucket: "meuquiz-fc269.firebasestorage.app",
-            messagingSenderId: "124551936755",
-            appId: "1:124551936755:web:b58cdbe6bc8f3ca9049586"
-        };
-
-        const CHECKOUT_URL = 'https://pay.wiapy.com/LJuEuullf4';
-        const PROJECT_ID = 'quizeriv';
+        const CHECKOUT_URL = 'https://pay.wiapy.com/GK-lPSsiEL';
         // ==========================================
 
         const QUESTIONS = [
-            { id: 'idade', t: 'Qual sua faixa etária? (Fator de risco vascular )', o: ['18-25', '26-35', '36-45', '46-55', '55+'] },
+            { id: 'idade', t: 'Qual sua faixa etária? (Fator de risco vascular)', o: ['18-25', '26-35', '36-45', '46-55', '55+'] },
             { id: 'rigidez', t: 'Com que frequência você atinge rigidez máxima do pênis?', o: ['Quase nunca', 'Raramente', 'Às vezes', 'Frequentemente', 'Sempre'] },
             { id: 'manutencao', t: 'Consegue manter a ereção até ejacular?', o: ['Tenho muita dificuldade', 'Às vezes falha', 'Sim, sem problemas'] },
             { id: 'matinal', t: 'Você acorda com ereção matinal?', o: ['Nunca', 'Raramente', 'Quase todos os dias'] },
             { id: 'circulacao', t: 'Sente as extremidades (mãos/pés) frias com frequência?', o: ['Sim, constantemente', 'Às vezes', 'Não'] },
             { id: 'historico', t: 'Você tem histórico de Diabetes ou Pressão Alta?', o: ['Sim, ambos', 'Sim, um deles', 'Não'] },
-            { id: 'tamanho', t: 'Você percebeu alguma redução no tamanho do  pênis ao longo dos anos?', o: ['Sim, visível', 'Talvez um pouco', 'Não'] },
+            { id: 'tamanho', t: 'Você percebeu alguma redução no tamanho do pênis ao longo dos anos?', o: ['Sim, visível', 'Talvez um pouco', 'Não'] },
             { id: 'estresse', t: 'Qual seu nível de estresse diário?', o: ['Muito alto', 'Alto', 'Moderado', 'Baixo'] },
             { id: 'sono', t: 'Quantas horas de sono de qualidade você tem?', o: ['Menos de 5h', '5-6h', '7-8h', 'Mais de 8h'] },
             { id: 'libido', t: 'Como você avalia seu desejo sexual (libido)?', o: ['Muito baixo', 'Baixo', 'Normal', 'Alto'] },
@@ -202,151 +189,123 @@
             { id: 'prioridade', t: 'Resolver este problema é sua prioridade máxima?', o: ['Sim, urgente', 'Sim, mas posso esperar', 'Apenas curiosidade'] }
         ];
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const sid = 's_' + Date.now();
-        let step = 0, qIdx = 0, stepStartTime = 0, avgHesitation = 0, hesitationCount = 0;
+        let step = 0;
+        let qIdx = 0;
 
-        console.log('🚀 Quiz iniciado - Projeto:', PROJECT_ID);
-        console.log('📌 Session ID:', sid);
-        console.log('🎯 Checkout:', CHECKOUT_URL);
-
-        window.next = () => {
-            if (step === 0) { 
-                step = 1; 
-                update(ref(db, 'sessions/'+sid), { status: 'vsl_clicked', project: PROJECT_ID }); 
-                startModalDelay(); 
-            }
-            else if (step === 1) { 
-                step = 2; 
-                update(ref(db, 'sessions/'+sid), { status: 'quiz_started' }); 
-            }
-            else if (step === 2) { 
-                if (qIdx < 14) { 
-                    qIdx++; 
-                } else { 
-                    step = 3; 
-                    startProcessing(); 
-                } 
+        function next() {
+            if (step === 0) {
+                step = 1;
+                startModalDelay();
+            } else if (step === 1) {
+                step = 2;
+            } else if (step === 2) {
+                if (qIdx < 14) {
+                    qIdx++;
+                } else {
+                    step = 3;
+                    startProcessing();
+                }
             }
             render();
-        };
+        }
 
-        window.sel = (id, val) => {
-            const hesitation = Date.now() - stepStartTime;
-            avgHesitation = (avgHesitation * hesitationCount + hesitation) / (hesitationCount + 1);
-            hesitationCount++;
-            update(ref(db, 'sessions/'+sid), { 
-                [id]: val, 
-                currentStep: qIdx + 1, 
-                avgHesitation: avgHesitation,
-                lastUpdate: Date.now()
-            });
-            window.next();
-        };
+        function sel(id, val) {
+            next();
+        }
 
-        window.finish = () => { 
-            update(ref(db, 'sessions/'+sid), { status: 'checkout_clicked' }); 
-            const finalUrl = `${CHECKOUT_URL}?utm_source=${sid}&external_id=${sid}`;
-            console.log('🔗 Redirecionando para:', finalUrl);
-            window.location.href = finalUrl;
-        };
+        function finish() {
+            console.log('🔗 Redirecionando para:', CHECKOUT_URL);
+            window.location.href = CHECKOUT_URL;
+        }
 
         function render() {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('s-' + step).classList.add('active');
+            
             if (step === 2) {
                 const q = QUESTIONS[qIdx];
                 document.getElementById('q-num').textContent = qIdx + 1;
-                document.getElementById('p-fill').style.width = ((qIdx+1)/15*100) + '%';
-                document.getElementById('q-box').innerHTML = `<div style="font-size: 22px; font-weight: 900; margin-bottom: 15px;">${q.t}</div><div class="options-grid">${q.o.map((o, i) => `<button class="option-btn" onclick="sel('${q.id}', ${i})">${o}</button>`).join('')}</div>`;
-                stepStartTime = Date.now();
+                document.getElementById('p-fill').style.width = ((qIdx + 1) / 15 * 100) + '%';
+                document.getElementById('q-box').innerHTML = `
+                    <div style="font-size: 22px; font-weight: 900; margin-bottom: 15px;">${q.t}</div>
+                    <div class="options-grid">
+                        ${q.o.map((o, i) => `<button class="option-btn" onclick="sel('${q.id}', ${i})">${o}</button>`).join('')}
+                    </div>
+                `;
             }
         }
 
         function startModalDelay() {
-            let sIdx = 0; 
+            let sIdx = 0;
             const slides = document.querySelectorAll('#authority-carousel .slide');
-            const interval = setInterval(() => { 
-                slides.forEach(s => s.classList.remove('active')); 
-                sIdx = (sIdx + 1) % slides.length; 
-                slides[sIdx].classList.add('active'); 
+            const interval = setInterval(function() {
+                slides.forEach(s => s.classList.remove('active'));
+                sIdx = (sIdx + 1) % slides.length;
+                slides[sIdx].classList.add('active');
             }, 2000);
-            setTimeout(() => { 
-                clearInterval(interval); 
-                document.getElementById('loading-text').textContent = "Avaliação carregada!"; 
-                document.getElementById('start-quiz-btn').disabled = false; 
+
+            setTimeout(function() {
+                clearInterval(interval);
+                document.getElementById('loading-text').textContent = 'Avaliação carregada!';
+                document.getElementById('start-quiz-btn').disabled = false;
             }, 5000);
         }
 
         function startProcessing() {
-            let sIdx = 0; 
+            let sIdx = 0;
             const slides = document.querySelectorAll('#depo-carousel .slide');
-            const interval = setInterval(() => { 
-                slides.forEach(s => s.classList.remove('active')); 
-                sIdx = (sIdx + 1) % slides.length; 
-                slides[sIdx].classList.add('active'); 
+            const interval = setInterval(function() {
+                slides.forEach(s => s.classList.remove('active'));
+                sIdx = (sIdx + 1) % slides.length;
+                slides[sIdx].classList.add('active');
             }, 2000);
-            
-            setTimeout(() => { 
-                document.getElementById('pb-1').style.width = '100%'; 
+
+            setTimeout(function() {
+                document.getElementById('pb-1').style.width = '100%';
                 document.getElementById('pb-1').classList.add('complete');
-                document.getElementById('st-1').innerText = 'VALIDADO ✓'; 
+                document.getElementById('st-1').textContent = 'VALIDADO ✓';
                 document.getElementById('st-1').classList.add('complete');
-                document.getElementById('st-2').innerText = 'PROCESSANDO';
+                document.getElementById('st-2').textContent = 'PROCESSANDO';
             }, 2500);
 
-            setTimeout(() => { 
-                document.getElementById('pb-2').style.width = '100%'; 
+            setTimeout(function() {
+                document.getElementById('pb-2').style.width = '100%';
                 document.getElementById('pb-2').classList.add('complete');
-                document.getElementById('st-2').innerText = 'VALIDADO ✓'; 
+                document.getElementById('st-2').textContent = 'VALIDADO ✓';
                 document.getElementById('st-2').classList.add('complete');
-                document.getElementById('st-3').innerText = 'PROCESSANDO';
+                document.getElementById('st-3').textContent = 'PROCESSANDO';
             }, 5000);
 
-            setTimeout(() => { 
-                document.getElementById('pb-3').style.width = '100%'; 
+            setTimeout(function() {
+                document.getElementById('pb-3').style.width = '100%';
                 document.getElementById('pb-3').classList.add('complete');
-                document.getElementById('st-3').innerText = 'COMPATÍVEL ✓'; 
+                document.getElementById('st-3').textContent = 'COMPATÍVEL ✓';
                 document.getElementById('st-3').classList.add('complete');
             }, 7500);
 
-            setTimeout(() => { 
-                clearInterval(interval); 
-                step = 4; 
-                render(); 
+            setTimeout(function() {
+                clearInterval(interval);
+                step = 4;
+                render();
             }, 9000);
         }
 
-        setInterval(() => {
+        setInterval(function() {
             const el = document.getElementById('online-count-val');
-            if(el) {
-                const current = parseInt(el.innerText);
-                const change = Math.floor(Math.random() * 6) - 2; 
-                el.innerText = Math.max(135, Math.min(172, current + change));
+            if (el) {
+                const current = parseInt(el.textContent);
+                const change = Math.floor(Math.random() * 6) - 2;
+                el.textContent = Math.max(135, Math.min(172, current + change));
             }
         }, 3500);
 
-        function init() { 
-            render(); 
-            set(ref(db, 'sessions/'+sid), { 
-                enteredAt: serverTimestamp(), 
-                status: 'vsl_viewed', 
-                currentStep: 0,
-                project: PROJECT_ID,
-                id: sid
-            }); 
-        }
-        init();
-
-        // Controle de vídeo fixo e scroll
         let videoFixed = false;
-        window.addEventListener('scroll', () => {
+        window.addEventListener('scroll', function() {
             if (step !== 0) return;
             const videoContainer = document.getElementById('video-container');
             const placeholder = document.querySelector('.video-placeholder');
             const rect = videoContainer.getBoundingClientRect();
-            
+
             if (rect.top <= 0 && !videoFixed) {
                 videoFixed = true;
                 videoContainer.classList.add('sticky');
@@ -357,6 +316,10 @@
                 placeholder.classList.remove('show');
             }
         });
+
+        console.log('🇧🇷 Quiz iniciado - Português');
+        console.log('🎯 Checkout:', CHECKOUT_URL);
+        render();
     </script>
 </body>
 </html>
