@@ -5,1034 +5,571 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#050505">
     <title>Consulta Profissional - Protocolo BICARBONATO</title>
+
+    <script>
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init','1608381797077092');fbq('track','PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1608381797077092&ev=PageView&noscript=1"/></noscript>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #ef4444;
-            --bg: #050505;
-            --card: #111111;
-            --text: #ffffff;
-            --muted: #9ca3af;
-            --border: #262626;
-            --green: #22c55e;
+        :root{--primary:#ef4444;--bg:#050505;--card:#111111;--text:#ffffff;--muted:#9ca3af;--border:#262626;--green:#22c55e}
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        html,body{height:100%;overflow-x:hidden}
+        body{font-family:'Inter',sans-serif;background-color:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:16px}
+        .quiz-card{width:100%;max-width:550px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:clamp(18px,5vw,30px);box-shadow:0 20px 40px rgba(0,0,0,.6);text-align:center}
+        .fixed-header{font-size:clamp(9px,2.5vw,11px);font-weight:900;color:var(--primary);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px}
+        .headline{font-size:clamp(18px,5vw,24px);font-weight:900;color:#fff;margin-bottom:12px;line-height:1.2;text-transform:uppercase}
+        .sub-headline{font-size:clamp(13px,3.5vw,15px);color:var(--primary);font-weight:700;margin-bottom:18px}
+        .btn-next{background:var(--primary);color:#fff;border:none;padding:clamp(16px,4vw,22px);border-radius:14px;font-weight:900;cursor:pointer;width:100%;font-size:clamp(16px,4.5vw,20px);text-transform:uppercase;transition:all .3s;box-shadow:0 10px 20px rgba(239,68,68,.3);margin-top:20px;line-height:1.2}
+        .btn-next:hover{transform:scale(1.02)}.btn-next:active{transform:scale(.98)}
+        .screen{display:none}.screen.active{display:block}
+        .progress-bar{height:6px;background:var(--border);border-radius:10px;margin-bottom:24px;overflow:hidden}
+        .progress-fill{height:100%;background:var(--primary);width:0%;transition:width .4s ease}
+        .options-grid{display:grid;gap:12px;margin-bottom:20px}
+        .option-btn{background:var(--card);border:2px solid var(--border);color:var(--text);padding:clamp(14px,4vw,18px) clamp(12px,3vw,16px);border-radius:12px;cursor:pointer;font-weight:700;transition:all .2s;font-size:clamp(14px,3.8vw,16px);text-align:left;line-height:1.3;width:100%;display:flex;align-items:center;gap:12px}
+        .option-btn:hover,.option-btn:active{border-color:var(--primary);background:rgba(239,68,68,.1)}
+        .option-btn svg{flex-shrink:0;width:20px;height:20px;opacity:.75}
+        .urgency-badge{background:rgba(34,197,94,.15);border:2px solid var(--green);padding:10px 14px;border-radius:50px;display:inline-block;margin-bottom:18px;font-weight:900;color:var(--green);font-size:clamp(10px,2.8vw,12px);line-height:1.3}
+        .carousel{width:100%;height:clamp(180px,45vw,250px);background:#000;border-radius:14px;margin:14px 0;overflow:hidden;position:relative;border:1px solid var(--border)}
+        .slide{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;display:flex;align-items:center;justify-content:center}
+        .slide.active{opacity:1}.slide img{width:100%;height:100%;object-fit:contain}
+        .slide-caption{position:absolute;bottom:8px;left:8px;right:8px;background:rgba(0,0,0,.85);padding:7px 10px;border-radius:8px;font-size:clamp(9px,2.5vw,11px);font-weight:700;color:var(--green);border:1px solid rgba(34,197,94,.3);text-align:center;z-index:10}
+        .analysis-dashboard{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+        .metric-card{background:#0a0a0a;border:1px solid var(--border);border-radius:12px;padding:14px 12px;text-align:center;position:relative;overflow:hidden;transition:border-color .4s ease}
+        .metric-card.active{border-color:var(--primary)}.metric-card.done{border-color:var(--green)}
+        .metric-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--border);transition:background .4s ease}
+        .metric-card.active::before{background:var(--primary)}.metric-card.done::before{background:var(--green)}
+        .metric-label{font-size:clamp(8px,2.2vw,10px);font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:6px;transition:color .4s;line-height:1.3}
+        .metric-card.done .metric-label{color:#fff}
+        .metric-status{font-size:clamp(7px,2vw,9px);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;color:var(--muted);transition:color .4s}
+        .metric-card.active .metric-status{color:var(--primary)}.metric-card.done .metric-status{color:var(--green)}
+        .gauge-wrap{position:relative;width:56px;height:56px;margin:0 auto 8px}
+        .gauge-svg{transform:rotate(-90deg)}
+        .gauge-bg{fill:none;stroke:#222;stroke-width:4}
+        .gauge-fill{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:138.23;stroke-dashoffset:138.23;transition:stroke-dashoffset .8s ease,stroke .4s ease}
+        .gauge-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--muted)}
+        .analysis-center{grid-column:span 2;background:#0a0a0a;border:1px solid var(--border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;text-align:left;transition:border-color .4s,background .4s}
+        .analysis-center.done{border-color:var(--green);background:rgba(34,197,94,.05)}
+        .center-icon{width:40px;height:40px;flex-shrink:0}
+        .center-label{font-size:clamp(9px,2.5vw,11px);font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+        .center-value{font-size:clamp(14px,4vw,17px);font-weight:900;color:#fff}
+        .result-hero{background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(34,197,94,.05));border:3px solid var(--green);padding:clamp(16px,4vw,24px) clamp(14px,3.5vw,22px);border-radius:20px;margin:20px 0;box-shadow:0 15px 40px rgba(34,197,94,.2);text-align:center}
+        .result-label{font-size:clamp(10px,2.8vw,12px);color:#9ca3af;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:6px}
+        .result-number{font-size:clamp(30px,8vw,38px);font-weight:900;color:var(--green);line-height:1;margin:8px 0;text-shadow:0 0 20px rgba(34,197,94,.45);letter-spacing:-1px}
+        .result-subtext{font-size:clamp(12px,3.2vw,15px);color:#d1d5db;margin-top:10px;font-weight:600;line-height:1.4}
+        .urgency-timer{background:rgba(239,68,68,.1);border:2px solid #ef4444;padding:11px 14px;border-radius:12px;margin:18px 0;font-size:clamp(11px,3vw,13px);font-weight:900;color:#ef4444;line-height:1.4}
+        .benefit-list{text-align:left;margin:20px 0}
+        .benefit-item{display:flex;align-items:flex-start;margin-bottom:14px;font-size:clamp(13px,3.5vw,15px);font-weight:700;color:#fff;line-height:1.4}
+        .benefit-item span{color:var(--green);margin-right:10px;font-size:clamp(16px,4vw,20px);flex-shrink:0;margin-top:-1px}
+        .guarantee-box{display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);padding:clamp(12px,3vw,15px);border-radius:12px;margin:18px 0;border:1px dashed #444;gap:14px}
+        .guarantee-badge{width:clamp(40px,10vw,50px);height:auto;flex-shrink:0}
+        .guarantee-text{text-align:left}.guarantee-text p{font-size:clamp(11px,3vw,13px);line-height:1.4}
+        .social-proof-live{font-size:clamp(11px,3vw,13px);color:var(--green);font-weight:700;margin:14px 0}
+        .question-text{font-size:clamp(17px,4.8vw,22px);font-weight:900;margin-bottom:18px;line-height:1.35;text-align:left}
+
+        /* ===================== PLAYER ===================== */
+        .player-wrap{
+            position:relative;
+            width:100%;
+            background:#000;
+            border-radius:14px;
+            overflow:hidden;
+            margin-bottom:16px;
+            border:1px solid var(--border);
+            aspect-ratio:9/16;
+            cursor:pointer;
+            user-select:none;
+        }
+        .player-wrap video{
+            position:absolute;inset:0;
+            width:100%;height:100%;
+            object-fit:cover;display:block;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        /* --- Thumbnail / loading overlay --- */
+        .player-thumb{
+            position:absolute;inset:0;
+            display:flex;flex-direction:column;
+            align-items:center;justify-content:center;
+            background:linear-gradient(160deg,#0d0d0d 0%,#1a0000 100%);
+            z-index:20;
+            transition:opacity .4s ease;
+        }
+        .player-thumb.hidden{opacity:0;pointer-events:none;}
+
+        .thumb-pulse{
+            position:relative;
+            width:80px;height:80px;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .thumb-pulse::before,.thumb-pulse::after{
+            content:'';position:absolute;inset:0;
+            border-radius:50%;
+            background:rgba(239,68,68,.18);
+            animation:pulse-ring 2s cubic-bezier(.4,0,.6,1) infinite;
+        }
+        .thumb-pulse::after{animation-delay:.7s;}
+        @keyframes pulse-ring{
+            0%{transform:scale(.7);opacity:1}
+            100%{transform:scale(1.7);opacity:0}
+        }
+        .thumb-play-btn{
+            position:relative;z-index:2;
+            width:68px;height:68px;
+            background:var(--primary);
+            border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 0 0 4px rgba(239,68,68,.35),0 8px 32px rgba(239,68,68,.5);
+            transition:transform .15s;
+        }
+        .player-wrap:active .thumb-play-btn{transform:scale(.93);}
+        .thumb-play-btn svg{width:28px;height:28px;fill:#fff;margin-left:5px;}
+
+        .thumb-label{
+            margin-top:18px;
+            font-size:clamp(12px,3.2vw,14px);
+            font-weight:900;
+            color:#fff;
+            text-transform:uppercase;
+            letter-spacing:1.5px;
+            text-shadow:0 2px 8px rgba(0,0,0,.8);
+        }
+        .thumb-sublabel{
+            margin-top:6px;
+            font-size:clamp(10px,2.5vw,12px);
+            font-weight:700;
+            color:rgba(255,255,255,.45);
+            text-transform:uppercase;
+            letter-spacing:.5px;
         }
 
-        html, body {
-            height: 100%;
-            overflow-x: hidden;
+        /* --- Centre pause/play flash --- */
+        .center-flash{
+            position:absolute;inset:0;
+            display:flex;align-items:center;justify-content:center;
+            z-index:15;pointer-events:none;
+            opacity:0;
+        }
+        .center-flash.show{animation:flash-anim .5s ease forwards;}
+        @keyframes flash-anim{
+            0%{opacity:1;transform:scale(.8)}
+            60%{opacity:1;transform:scale(1.1)}
+            100%{opacity:0;transform:scale(1.3)}
+        }
+        .cf-circle{
+            width:60px;height:60px;
+            background:rgba(0,0,0,.6);
+            border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+        }
+        .cf-circle svg{width:28px;height:28px;fill:#fff;}
+
+        /* --- Bottom controls bar --- */
+        .player-controls{
+            position:absolute;bottom:0;left:0;right:0;
+            background:linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%);
+            padding:28px 14px 10px;
+            z-index:30;
+            transition:opacity .3s;
+        }
+        .player-controls.hide{opacity:0;}
+
+        /* progress */
+        .prog-track{
+            width:100%;height:5px;
+            background:rgba(255,255,255,.25);
+            border-radius:10px;
+            position:relative;
+            cursor:pointer;
+            margin-bottom:10px;
+        }
+        .prog-track:hover{height:7px;margin-bottom:9px;}
+        .prog-buffered{
+            position:absolute;top:0;left:0;height:100%;
+            background:rgba(255,255,255,.35);
+            border-radius:10px;
+            width:0%;transition:width .5s linear;
+        }
+        .prog-played{
+            position:absolute;top:0;left:0;height:100%;
+            background:var(--primary);
+            border-radius:10px;
+            width:0%;
+            box-shadow:0 0 6px rgba(239,68,68,.7);
+        }
+        .prog-dot{
+            position:absolute;top:50%;right:-6px;
+            width:14px;height:14px;
+            background:#fff;border-radius:50%;
+            transform:translateY(-50%);
+            box-shadow:0 0 0 3px rgba(239,68,68,.5);
+            display:none;
+        }
+        .prog-track:hover .prog-dot{display:block;}
+
+        /* bottom row */
+        .ctrl-row{
+            display:flex;align-items:center;gap:10px;
+        }
+        .ctrl-btn{
+            background:none;border:none;cursor:pointer;
+            padding:4px;display:flex;align-items:center;justify-content:center;
+            flex-shrink:0;
+        }
+        .ctrl-btn svg{width:22px;height:22px;fill:#fff;display:block;}
+        .ctrl-time{
+            font-size:12px;font-weight:700;color:rgba(255,255,255,.85);
+            white-space:nowrap;flex-shrink:0;
+        }
+        .ctrl-spacer{flex:1;}
+        .ctrl-vol{display:flex;align-items:center;gap:6px;}
+        .vol-slider{
+            -webkit-appearance:none;appearance:none;
+            width:60px;height:4px;
+            border-radius:4px;
+            background:rgba(255,255,255,.3);
+            outline:none;cursor:pointer;
+        }
+        .vol-slider::-webkit-slider-thumb{
+            -webkit-appearance:none;
+            width:14px;height:14px;
+            border-radius:50%;
+            background:#fff;
+            cursor:pointer;
+            box-shadow:0 0 4px rgba(0,0,0,.5);
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            min-height: -webkit-fill-available;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 16px;
+        /* loading spinner over video */
+        .vid-spinner{
+            position:absolute;inset:0;
+            display:none;align-items:center;justify-content:center;
+            z-index:18;
+            pointer-events:none;
         }
-
-        .quiz-card {
-            width: 100%;
-            max-width: 550px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: clamp(18px, 5vw, 30px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-            text-align: center;
+        .vid-spinner.show{display:flex;}
+        .vs-ring{
+            width:42px;height:42px;
+            border:3px solid rgba(255,255,255,.15);
+            border-top-color:var(--primary);
+            border-radius:50%;
+            animation:spin .8s linear infinite;
         }
-
-        .fixed-header {
-            font-size: clamp(9px, 2.5vw, 11px);
-            font-weight: 900;
-            color: var(--primary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 16px;
-        }
-
-        .headline {
-            font-size: clamp(18px, 5vw, 24px);
-            font-weight: 900;
-            color: #fff;
-            margin-bottom: 12px;
-            line-height: 1.2;
-            text-transform: uppercase;
-        }
-
-        .sub-headline {
-            font-size: clamp(13px, 3.5vw, 15px);
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 18px;
-        }
-
-        .btn-next {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: clamp(16px, 4vw, 22px);
-            border-radius: 14px;
-            font-weight: 900;
-            cursor: pointer;
-            width: 100%;
-            font-size: clamp(16px, 4.5vw, 20px);
-            text-transform: uppercase;
-            transition: all 0.3s;
-            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
-            margin-top: 20px;
-            -webkit-appearance: none;
-            touch-action: manipulation;
-            line-height: 1.2;
-        }
-
-        .btn-next:hover { transform: scale(1.02); }
-        .btn-next:active { transform: scale(0.98); }
-        .btn-next:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .screen { display: none; }
-        .screen.active { display: block; }
-
-        .progress-bar {
-            height: 6px;
-            background: var(--border);
-            border-radius: 10px;
-            margin-bottom: 24px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 0%;
-            transition: width 0.4s ease;
-        }
-
-        .options-grid {
-            display: grid;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        /* ======== OPTION BTN COM ÍCONE SVG ======== */
-        .option-btn {
-            background: var(--card);
-            border: 2px solid var(--border);
-            color: var(--text);
-            padding: clamp(14px, 4vw, 18px) clamp(12px, 3vw, 16px);
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all 0.2s;
-            font-size: clamp(14px, 3.8vw, 16px);
-            text-align: left;
-            -webkit-appearance: none;
-            touch-action: manipulation;
-            line-height: 1.3;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .option-btn:hover,
-        .option-btn:active {
-            border-color: var(--primary);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
-        .option-btn svg {
-            flex-shrink: 0;
-            width: 20px;
-            height: 20px;
-            opacity: 0.75;
-        }
-
-        .urgency-badge {
-            background: rgba(34, 197, 94, 0.15);
-            border: 2px solid var(--green);
-            padding: 10px 14px;
-            border-radius: 50px;
-            display: inline-block;
-            margin-bottom: 18px;
-            font-weight: 900;
-            color: var(--green);
-            font-size: clamp(10px, 2.8vw, 12px);
-            line-height: 1.3;
-        }
-
-        .carousel {
-            width: 100%;
-            height: clamp(180px, 45vw, 250px);
-            background: #000;
-            border-radius: 14px;
-            margin: 14px 0;
-            overflow: hidden;
-            position: relative;
-            border: 1px solid var(--border);
-        }
-
-        .slide {
-            position: absolute;
-            inset: 0;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .slide.active { opacity: 1; }
-
-        .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        .slide-caption {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            right: 8px;
-            background: rgba(0,0,0,0.85);
-            padding: 7px 10px;
-            border-radius: 8px;
-            font-size: clamp(9px, 2.5vw, 11px);
-            font-weight: 700;
-            color: var(--green);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            text-align: center;
-            z-index: 10;
-        }
-
-        /* ======== ANÁLISE — NOVO DESIGN ======== */
-        .analysis-dashboard {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .metric-card {
-            background: #0a0a0a;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 14px 12px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            transition: border-color 0.4s ease;
-        }
-
-        .metric-card.active {
-            border-color: var(--primary);
-        }
-
-        .metric-card.done {
-            border-color: var(--green);
-        }
-
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: var(--border);
-            transition: background 0.4s ease;
-        }
-
-        .metric-card.active::before { background: var(--primary); }
-        .metric-card.done::before { background: var(--green); }
-
-        .metric-icon {
-            width: 32px;
-            height: 32px;
-            margin: 0 auto 8px;
-            opacity: 0.4;
-            transition: opacity 0.4s;
-        }
-
-        .metric-card.active .metric-icon,
-        .metric-card.done .metric-icon { opacity: 1; }
-
-        .metric-label {
-            font-size: clamp(8px, 2.2vw, 10px);
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--muted);
-            margin-bottom: 6px;
-            transition: color 0.4s;
-            line-height: 1.3;
-        }
-
-        .metric-card.done .metric-label { color: #fff; }
-
-        .metric-value {
-            font-size: clamp(18px, 5vw, 24px);
-            font-weight: 900;
-            color: var(--border);
-            transition: color 0.5s ease, text-shadow 0.5s ease;
-            line-height: 1;
-        }
-
-        .metric-card.active .metric-value { color: var(--primary); }
-        .metric-card.done .metric-value {
-            color: var(--green);
-            text-shadow: 0 0 12px rgba(34,197,94,0.4);
-        }
-
-        .metric-status {
-            font-size: clamp(7px, 2vw, 9px);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-top: 4px;
-            color: var(--muted);
-            transition: color 0.4s;
-        }
-
-        .metric-card.active .metric-status { color: var(--primary); }
-        .metric-card.done .metric-status { color: var(--green); }
-
-        /* Gauge circular */
-        .gauge-wrap {
-            position: relative;
-            width: 56px;
-            height: 56px;
-            margin: 0 auto 8px;
-        }
-
-        .gauge-svg { transform: rotate(-90deg); }
-
-        .gauge-bg {
-            fill: none;
-            stroke: #222;
-            stroke-width: 4;
-        }
-
-        .gauge-fill {
-            fill: none;
-            stroke-width: 4;
-            stroke-linecap: round;
-            stroke-dasharray: 138.23;
-            stroke-dashoffset: 138.23;
-            transition: stroke-dashoffset 0.8s ease, stroke 0.4s ease;
-        }
-
-        .gauge-text {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 900;
-            color: var(--muted);
-            transition: color 0.4s;
-        }
-
-        /* Cartão central maior — status geral */
-        .analysis-center {
-            grid-column: span 2;
-            background: #0a0a0a;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            text-align: left;
-            transition: border-color 0.4s, background 0.4s;
-        }
-
-        .analysis-center.done {
-            border-color: var(--green);
-            background: rgba(34,197,94,0.05);
-        }
-
-        .center-icon {
-            width: 40px;
-            height: 40px;
-            flex-shrink: 0;
-        }
-
-        .center-label {
-            font-size: clamp(9px, 2.5vw, 11px);
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
-        }
-
-        .center-value {
-            font-size: clamp(14px, 4vw, 17px);
-            font-weight: 900;
-            color: #fff;
-        }
-
-        /* ======== RESULTADO HERO — TAMANHO REDUZIDO ======== */
-        .result-hero {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.05));
-            border: 3px solid var(--green);
-            padding: clamp(16px, 4vw, 24px) clamp(14px, 3.5vw, 22px);
-            border-radius: 20px;
-            margin: 20px 0;
-            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.2);
-            text-align: center;
-        }
-
-        .result-label {
-            font-size: clamp(10px, 2.8vw, 12px);
-            color: #9ca3af;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-
-        /* MODIFICADO: tamanho reduzido de 48–64px para 30–38px */
-        .result-number {
-            font-size: clamp(30px, 8vw, 38px);
-            font-weight: 900;
-            color: var(--green);
-            line-height: 1;
-            margin: 8px 0;
-            text-shadow: 0 0 20px rgba(34, 197, 94, 0.45);
-            letter-spacing: -1px;
-        }
-
-        .result-subtext {
-            font-size: clamp(12px, 3.2vw, 15px);
-            color: #d1d5db;
-            margin-top: 10px;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        .urgency-timer {
-            background: rgba(239, 68, 68, 0.1);
-            border: 2px solid #ef4444;
-            padding: 11px 14px;
-            border-radius: 12px;
-            margin: 18px 0;
-            font-size: clamp(11px, 3vw, 13px);
-            font-weight: 900;
-            color: #ef4444;
-            line-height: 1.4;
-        }
-
-        .benefit-list { text-align: left; margin: 20px 0; }
-
-        .benefit-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 14px;
-            font-size: clamp(13px, 3.5vw, 15px);
-            font-weight: 700;
-            color: #fff;
-            line-height: 1.4;
-        }
-
-        .benefit-item span {
-            color: var(--green);
-            margin-right: 10px;
-            font-size: clamp(16px, 4vw, 20px);
-            flex-shrink: 0;
-            margin-top: -1px;
-        }
-
-        .guarantee-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.05);
-            padding: clamp(12px, 3vw, 15px);
-            border-radius: 12px;
-            margin: 18px 0;
-            border: 1px dashed #444;
-            gap: 14px;
-        }
-
-        .guarantee-badge {
-            width: clamp(40px, 10vw, 50px);
-            height: auto;
-            flex-shrink: 0;
-        }
-
-        .guarantee-text { text-align: left; }
-        .guarantee-text p { font-size: clamp(11px, 3vw, 13px); line-height: 1.4; }
-
-        .social-proof-live {
-            font-size: clamp(11px, 3vw, 13px);
-            color: var(--green);
-            font-weight: 700;
-            margin: 14px 0;
-        }
-
-        .question-text {
-            font-size: clamp(17px, 4.8vw, 22px);
-            font-weight: 900;
-            margin-bottom: 18px;
-            line-height: 1.35;
-            text-align: left;
-        }
-
-        .video-container {
-            position: relative;
-            background: #000;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            border: 1px solid var(--border);
-            width: 100%;
-        }
-
-        .video-container.sticky {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 9999;
-            margin: 0;
-            border-radius: 0;
-            max-width: 100%;
-        }
-
-        .video-placeholder { display: none; }
-        .video-placeholder.show { display: block; padding-bottom: 56.25%; }
-
-        wistia-player { position: relative !important; width: 100% !important; }
-        .wistia_embed { position: relative !important; }
-        .w-vulcan-v2-button { display: none !important; }
-
-        .q-counter {
-            font-size: clamp(11px, 3vw, 13px);
-            color: var(--muted);
-            margin-bottom: 14px;
-            text-align: right;
-            font-weight: 700;
-        }
-
-        .secure-footer {
-            font-size: clamp(10px, 2.5vw, 11px);
-            color: var(--muted);
-            margin-top: 14px;
-            line-height: 1.5;
-        }
-
-        @media (max-width: 380px) {
-            body { padding: 10px; }
-            .quiz-card { padding: 16px 14px; border-radius: 16px; }
-            .btn-next { padding: 15px; font-size: 15px; }
-        }
-
-        @media (max-height: 700px) {
-            .carousel { height: 160px; }
-        }
-
-        /* ======== ANÁLISE — SPINNER CENTRAL ======== */
-        .analysis-spinner-wrap {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 18px;
-        }
-
-        .spinner-ring {
-            width: 48px;
-            height: 48px;
-            border: 3px solid #222;
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 0.9s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .spinner-label {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        @keyframes spin{to{transform:rotate(360deg)}}
+
+        .secure-footer{font-size:clamp(10px,2.5vw,11px);color:var(--muted);margin-top:14px;line-height:1.5}
+        .analysis-spinner-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:18px}
+        .spinner-ring{width:48px;height:48px;border:3px solid #222;border-top-color:var(--primary);border-radius:50%;animation:spin .9s linear infinite}
+        .spinner-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+        @media(max-width:380px){body{padding:10px}.quiz-card{padding:16px 14px;border-radius:16px}.btn-next{padding:15px;font-size:15px}}
+        @media(max-height:700px){.carousel{height:160px}}
     </style>
 </head>
 <body>
-    <div class="quiz-card">
+<div class="quiz-card">
 
-        <!-- ===== TELA 1: VSL ===== -->
-        <div id="s-0" class="screen active">
-            <div class="fixed-header">PROTOCOLO BICARBONATO — MÉTODO CIENTÍFICO</div>
-            <h1 class="headline">AUMENTE SEU PÊNIS ATÉ 7CM EM 45 DIAS SEM CIRURGIA OU APARELHOS</h1>
-            <p class="sub-headline">Assista ao vídeo e descubra o método usado por milhares de homens</p>
-            <div class="video-placeholder"></div>
-            <div class="video-container" id="video-container">
-                <script src="https://fast.wistia.com/player.js" async></script>
-                <script src="https://fast.wistia.com/embed/pmj228oqei.js" async type="module"></script>
-                <style>
-                    wistia-player[media-id='pmj228oqei']:not(:defined) {
-                        background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/pmj228oqei/swatch');
-                        display: block;
-                        filter: blur(5px);
-                        padding-top: 178.06%;
-                    }
-                </style>
-                <wistia-player media-id="pmj228oqei" aspect="0.5616224648985959"></wistia-player>
-            </div>
-            <button id="vsl-button" class="btn-next" onclick="next()">LIBERAR MEU PROTOCOLO AGORA</button>
-        </div>
+    <!-- TELA 1: PLAYER -->
+    <div id="s-0" class="screen active">
+        <div class="fixed-header">PROTOCOLO BICARBONATO — MÉTODO CIENTÍFICO</div>
+        <h1 class="headline">AUMENTE SEU PÊNIS ATÉ 7CM EM 45 DIAS SEM CIRURGIA OU APARELHOS</h1>
+        <p class="sub-headline">Assista ao vídeo e descubra o método usado por milhares de homens</p>
 
-        <!-- ===== TELA 2: AUTORIDADE ===== -->
-        <div id="s-1" class="screen">
-            <div class="fixed-header">AVALIAÇÃO PERSONALIZADA GRATUITA</div>
-            <h2 class="headline">DESCUBRA QUANTO VOCÊ PODE CRESCER EM 45 DIAS</h2>
-            <div class="urgency-badge">🟢 <span id="online-count-val">147</span> HOMENS FAZENDO AVALIAÇÃO AGORA</div>
-            <div class="carousel" id="authority-carousel">
-                <div class="slide active">
-                    <img src="https://metodotripe.shop/wp-content/uploads/2026/02/02-.jpg" alt="Paciente M. Souza" loading="lazy">
-                    <div class="slide-caption">PACIENTE M. SOUZA: +5.8cm (VALIDADO ✓)</div>
+        <div class="player-wrap" id="player-wrap" onclick="handlePlayerClick()">
+
+            <!-- Thumbnail / estado inicial -->
+            <div class="player-thumb" id="player-thumb">
+                <div class="thumb-pulse">
+                    <div class="thumb-play-btn">
+                        <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                    </div>
                 </div>
-                <div class="slide">
-                    <img src="https://metodotripe.shop/wp-content/uploads/2026/01/22109742.jpg" alt="Paciente R. Oliveira" loading="lazy">
-                    <div class="slide-caption">PACIENTE R. OLIVEIRA: +4.9cm (VALIDADO ✓)</div>
-                </div>
-                <div class="slide">
-                    <img src="https://metodotripe.shop/wp-content/uploads/2026/01/meaSaaTbaAaaaamhD_iLJzfk9u2QO-ZC1.jpg" alt="Estudo Clínico" loading="lazy">
-                    <div class="slide-caption">ESTUDO CLÍNICO: EXPANSÃO TECIDUAL ATIVA</div>
-                </div>
-            </div>
-            <button class="btn-next" onclick="next()" id="start-quiz-btn">INICIAR MINHA AVALIAÇÃO GRATUITA</button>
-        </div>
-
-        <!-- ===== TELA 3: QUIZ ===== -->
-        <div id="s-2" class="screen">
-            <div class="fixed-header">AVALIAÇÃO CLÍNICA — ETAPA <span id="q-num">1</span>/5</div>
-            <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
-            <div id="q-box"></div>
-        </div>
-
-        <!-- ===== TELA 4: PROCESSAMENTO — NOVO DESIGN ===== -->
-        <div id="s-3" class="screen">
-            <div class="fixed-header">SISTEMA DE DIAGNÓSTICO AVANÇADO</div>
-            <h2 style="font-size: clamp(16px,4.5vw,20px); font-weight: 900; margin-bottom: 18px;">ANALISANDO SEUS DADOS BIOMÉTRICOS</h2>
-
-            <div class="analysis-spinner-wrap" id="spinner-wrap">
-                <div class="spinner-ring"></div>
-                <div class="spinner-label" id="spinner-label">Inicializando diagnóstico...</div>
+                <div class="thumb-label">Clique para assistir o vídeo</div>
+                <div class="thumb-sublabel">▶ Reproduzir agora</div>
             </div>
 
-            <!-- Grid de métricas -->
-            <div class="analysis-dashboard">
+            <!-- Flash centro (play/pause) -->
+            <div class="center-flash" id="center-flash">
+                <div class="cf-circle" id="cf-circle">
+                    <svg viewBox="0 0 24 24" id="cf-icon"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
+            </div>
 
-                <!-- Cartão 1 -->
-                <div class="metric-card" id="mc-1">
-                    <div class="gauge-wrap">
-                        <svg class="gauge-svg" width="56" height="56" viewBox="0 0 56 56">
-                            <circle class="gauge-bg" cx="28" cy="28" r="22"/>
-                            <circle class="gauge-fill" id="gf-1" cx="28" cy="28" r="22" stroke="#ef4444"/>
+            <!-- Spinner de carregamento -->
+            <div class="vid-spinner" id="vid-spinner">
+                <div class="vs-ring"></div>
+            </div>
+
+            <!-- Vídeo -->
+            <video id="main-video" playsinline webkit-playsinline preload="metadata">
+                <source src="https://doram.shop/wp-content/uploads/2026/03/0322-1.mp4" type="video/mp4">
+            </video>
+
+            <!-- Controles bottom -->
+            <div class="player-controls" id="player-controls">
+                <!-- Barra de progresso -->
+                <div class="prog-track" id="prog-track" onclick="seekVideo(event)" onmousemove="seekPreview(event)">
+                    <div class="prog-buffered" id="prog-buffered"></div>
+                    <div class="prog-played" id="prog-played">
+                        <div class="prog-dot"></div>
+                    </div>
+                </div>
+                <!-- Linha de controles -->
+                <div class="ctrl-row">
+                    <button class="ctrl-btn" onclick="togglePlay(event)" id="play-pause-btn" aria-label="Play/Pause">
+                        <svg viewBox="0 0 24 24" id="pp-icon"><polygon points="5,3 19,12 5,21"/></svg>
+                    </button>
+                    <span class="ctrl-time" id="ctrl-time">0:00 / 0:00</span>
+                    <div class="ctrl-spacer"></div>
+                    <div class="ctrl-vol">
+                        <button class="ctrl-btn" onclick="toggleMute(event)" id="mute-btn" aria-label="Mute">
+                            <svg viewBox="0 0 24 24" id="vol-icon">
+                                <polygon points="11,5 6,9 2,9 2,15 6,15 11,19" fill="#fff"/>
+                                <path d="M15.54 8.46a5 5 0 010 7.07" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                                <path d="M19.07 4.93a10 10 0 010 14.14" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                        <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.05" value="1" oninput="setVolume(this.value)" onclick="stopProp(event)">
+                    </div>
+                    <button class="ctrl-btn" onclick="toggleFullscreen(event)" aria-label="Fullscreen">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round">
+                            <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
+                            <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
                         </svg>
-                        <div class="gauge-text" id="gv-1">—</div>
-                    </div>
-                    <div class="metric-label">Expansão Tecidual</div>
-                    <div class="metric-status" id="ms-1">Aguardando</div>
+                    </button>
                 </div>
-
-                <!-- Cartão 2 -->
-                <div class="metric-card" id="mc-2">
-                    <div class="gauge-wrap">
-                        <svg class="gauge-svg" width="56" height="56" viewBox="0 0 56 56">
-                            <circle class="gauge-bg" cx="28" cy="28" r="22"/>
-                            <circle class="gauge-fill" id="gf-2" cx="28" cy="28" r="22" stroke="#ef4444"/>
-                        </svg>
-                        <div class="gauge-text" id="gv-2">—</div>
-                    </div>
-                    <div class="metric-label">Potencial de Crescimento</div>
-                    <div class="metric-status" id="ms-2">Aguardando</div>
-                </div>
-
-                <!-- Cartão 3 -->
-                <div class="metric-card" id="mc-3">
-                    <div class="gauge-wrap">
-                        <svg class="gauge-svg" width="56" height="56" viewBox="0 0 56 56">
-                            <circle class="gauge-bg" cx="28" cy="28" r="22"/>
-                            <circle class="gauge-fill" id="gf-3" cx="28" cy="28" r="22" stroke="#ef4444"/>
-                        </svg>
-                        <div class="gauge-text" id="gv-3">—</div>
-                    </div>
-                    <div class="metric-label">Índice Vascular</div>
-                    <div class="metric-status" id="ms-3">Aguardando</div>
-                </div>
-
-                <!-- Cartão 4 -->
-                <div class="metric-card" id="mc-4">
-                    <div class="gauge-wrap">
-                        <svg class="gauge-svg" width="56" height="56" viewBox="0 0 56 56">
-                            <circle class="gauge-bg" cx="28" cy="28" r="22"/>
-                            <circle class="gauge-fill" id="gf-4" cx="28" cy="28" r="22" stroke="#ef4444"/>
-                        </svg>
-                        <div class="gauge-text" id="gv-4">—</div>
-                    </div>
-                    <div class="metric-label">Resposta Hormonal</div>
-                    <div class="metric-status" id="ms-4">Aguardando</div>
-                </div>
-
-                <!-- Cartão central — compatibilidade geral -->
-                <div class="analysis-center" id="mc-center">
-                    <svg class="center-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="20" cy="20" r="19" stroke="#333" stroke-width="2"/>
-                        <path d="M12 20l5 5 11-10" stroke="#444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="check-path"/>
-                    </svg>
-                    <div>
-                        <div class="center-label" id="center-label">Compatibilidade com Protocolo</div>
-                        <div class="center-value" id="center-value">Calculando...</div>
-                    </div>
-                </div>
-
             </div>
         </div>
 
-        <!-- ===== TELA 5: OFERTA FINAL ===== -->
-        <div id="s-4" class="screen">
-            <div class="fixed-header">✓ AVALIAÇÃO CONCLUÍDA</div>
-            <h2 style="font-size: clamp(17px,4.8vw,20px); font-weight: 900; margin-bottom: 18px;">SEU PLANO PERSONALIZADO DE 45 DIAS ESTÁ PRONTO</h2>
-
-            <div class="result-hero">
-                <div class="result-label">VOCÊ PODE GANHAR</div>
-                <div class="result-number">4 – 7 CM</div>
-                <div class="result-label">DE COMPRIMENTO + GROSSURA</div>
-                <p class="result-subtext">Baseado no seu nível vascular, histórico de ereção e urgência declarada</p>
-            </div>
-
-            <div class="urgency-timer">
-                ⚠️ <span id="access-count">47</span> HOMENS PEGARAM ACESSO NAS ÚLTIMAS 4 HORAS
-            </div>
-
-            <div class="benefit-list">
-                <div class="benefit-item"><span>✓</span> Ganhe de 3 a 7cm de comprimento PERMANENTE</div>
-                <div class="benefit-item"><span>✓</span> Primeiras medições visíveis em apenas 21 dias</div>
-                <div class="benefit-item"><span>✓</span> Ereções 3x mais firmes e duradouras a partir do dia 30</div>
-                <div class="benefit-item"><span>✓</span> Zero cirurgias, aparelhos ou medicamentos</div>
-                <div class="benefit-item"><span>✓</span> Ela vai SENTIR a diferença (e te agradecer)</div>
-                <div class="benefit-item"><span>✓</span> Garantia incondicional de 30 dias</div>
-            </div>
-
-            <div class="social-proof-live">
-                🟢 <span id="live-watching">23</span> pessoas visualizando esta oferta agora
-            </div>
-
-            <div class="guarantee-box">
-                <img src="https://doram.shop/wp-content/uploads/2026/03/img-pro-ok.png" class="guarantee-badge" alt="Garantia 30 dias" loading="lazy">
-                <div class="guarantee-text">
-                    <p style="font-weight: 900; color: #fff;">MÉTODO BICARBONATO</p>
-                    <p style="font-weight: 900; color: var(--green);">GARANTIA TOTAL DE 30 DIAS</p>
-                    <p style="color: var(--muted);">Satisfação 100% ou seu dinheiro de volta</p>
-                </div>
-            </div>
-
-            <button class="btn-next" onclick="finish()" style="margin-top: 8px;">ACESSAR MEU PLANO DE 45 DIAS AGORA</button>
-            <p class="secure-footer">🔒 Compra 100% Segura e Sigilosa • Acesso Imediato</p>
-        </div>
-
+        <button class="btn-next" onclick="goNext()">🔓 LIBERAR MINHA FÓRMULA AGORA</button>
     </div>
 
-    <script>
-        const CHECKOUT_URL = 'https://pay.wiapy.com/GK-lPSsiEL';
+    <!-- TELA 2 -->
+    <div id="s-1" class="screen">
+        <div class="fixed-header">AVALIAÇÃO PERSONALIZADA GRATUITA</div>
+        <h2 class="headline">DESCUBRA QUANTO VOCÊ PODE CRESCER EM 45 DIAS</h2>
+        <div class="urgency-badge">🟢 <span id="online-count-val">147</span> HOMENS FAZENDO AVALIAÇÃO AGORA</div>
+        <div class="carousel" id="authority-carousel">
+            <div class="slide active"><img src="https://metodotripe.shop/wp-content/uploads/2026/02/02-.jpg" alt="Resultado"><div class="slide-caption">PACIENTE M. SOUZA: +5.8cm (VALIDADO ✓)</div></div>
+            <div class="slide"><img src="https://metodotripe.shop/wp-content/uploads/2026/01/22109742.jpg" alt="Resultado"><div class="slide-caption">PACIENTE R. OLIVEIRA: +4.9cm (VALIDADO ✓)</div></div>
+            <div class="slide"><img src="https://metodotripe.shop/wp-content/uploads/2026/01/meaSaaTbaAaaaamhD_iLJzfk9u2QO-ZC1.jpg" alt="Estudo"><div class="slide-caption">ESTUDO CLÍNICO: EXPANSÃO TECIDUAL ATIVA</div></div>
+        </div>
+        <button class="btn-next" onclick="next()">INICIAR MINHA AVALIAÇÃO GRATUITA</button>
+    </div>
 
-        // ======== ÍCONES SVG POR TIPO ========
-        const ICONS = {
-            sad:     `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5-2 4-2 4 2 4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
-            warning: `<svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
-            neutral: `<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>`,
-            ok:      `<svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
-            fire:    `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c0 6-8 8-8 14a8 8 0 0016 0c0-4-2-7-4-9-1 3-4 4-4 4z"/></svg>`,
-            clock:   `<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
-            search:  `<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`,
-            muscle:  `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6.5a4 4 0 01-4 4h-1v2h1a4 4 0 010 8H6a4 4 0 010-8h1v-2H6a4 4 0 010-8h8"/></svg>`,
-            cross:   `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
-            bolt:    `<svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
-            brain:   `<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 017 4.5v0A2.5 2.5 0 014.5 7H4a2 2 0 00-2 2v0a2 2 0 002 2h.5A2.5 2.5 0 017 13.5v3A2.5 2.5 0 009.5 19h5a2.5 2.5 0 002.5-2.5v-3a2.5 2.5 0 012.5-2.5H20a2 2 0 002-2v0a2 2 0 00-2-2h-.5A2.5 2.5 0 0117 4.5v0A2.5 2.5 0 0114.5 2z"/></svg>`,
-            trend:   `<svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>`,
-            target:  `<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>`,
-        };
+    <!-- TELA 3 -->
+    <div id="s-2" class="screen">
+        <div class="fixed-header">AVALIAÇÃO CLÍNICA — ETAPA <span id="q-num">1</span>/5</div>
+        <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
+        <div id="q-box"></div>
+    </div>
 
-        // ======== PERGUNTAS SEM EMOJIS — COM ÍCONES SVG ========
-        const QUESTIONS = [
-            {
-                id: 'rigidez',
-                t: 'Com que frequência você consegue atingir rigidez TOTAL durante uma relação sexual?',
-                sub: 'Esse dado revela seu nível de vascularização peniana',
-                o: [
-                    { icon: 'sad',    text: 'Quase nunca — fico mole antes de terminar' },
-                    { icon: 'warning',text: 'Raramente — acontece mas é instável' },
-                    { icon: 'neutral',text: 'Às vezes — depende do dia' },
-                    { icon: 'ok',     text: 'Frequentemente — só falha ocasionalmente' },
-                    { icon: 'fire',   text: 'Sempre — sem nenhuma dificuldade' }
-                ]
-            },
-            {
-                id: 'matinal',
-                t: 'Você ainda acorda com ereção matinal (o "sinal de testosterona")?',
-                sub: 'Indicador clínico direto dos seus níveis hormonais',
-                o: [
-                    { icon: 'cross',  text: 'Nunca — faz muito tempo que não acontece' },
-                    { icon: 'warning',text: 'Raramente — 1 vez por semana ou menos' },
-                    { icon: 'ok',     text: 'Quase todos os dias — meu corpo ainda responde bem' }
-                ]
-            },
-            {
-                id: 'manutencao',
-                t: 'Você consegue manter a ereção firme do início ao FIM da relação?',
-                sub: 'Esse fator define a eficácia do protocolo para você',
-                o: [
-                    { icon: 'sad',    text: 'Não — perco antes de terminar com frequência' },
-                    { icon: 'warning',text: 'Às vezes — falha na hora mais crítica' },
-                    { icon: 'ok',     text: 'Sim — sem problemas para manter até o fim' }
-                ]
-            },
-            {
-                id: 'libido',
-                t: 'Como está seu desejo sexual nos últimos 3 meses?',
-                sub: 'O libido revela o estado atual da sua testosterona livre',
-                o: [
-                    { icon: 'cross',  text: 'Muito baixo — raramente sinto vontade' },
-                    { icon: 'sad',    text: 'Baixo — preciso de muito estímulo' },
-                    { icon: 'neutral',text: 'Normal — nada me preocupa muito' },
-                    { icon: 'fire',   text: 'Alto — só quero resultados físicos melhores' }
-                ]
-            },
-            {
-                id: 'prioridade',
-                t: 'Ser maior e ter mais controle nas relações é uma prioridade REAL para você agora?',
-                sub: 'Sua resposta define o plano ideal para o seu perfil',
-                o: [
-                    { icon: 'target', text: 'SIM — quero resolver isso o quanto antes' },
-                    { icon: 'clock',  text: 'Sim — mas posso esperar um pouco' },
-                    { icon: 'search', text: 'Estou apenas pesquisando por agora' }
-                ]
-            }
-        ];
+    <!-- TELA 4 -->
+    <div id="s-3" class="screen">
+        <div class="fixed-header">SISTEMA DE DIAGNÓSTICO AVANÇADO</div>
+        <h2 style="font-size:clamp(16px,4.5vw,20px);font-weight:900;margin-bottom:18px">ANALISANDO SEUS DADOS BIOMÉTRICOS</h2>
+        <div class="analysis-spinner-wrap" id="spinner-wrap"><div class="spinner-ring"></div><div class="spinner-label" id="spinner-label">Inicializando...</div></div>
+        <div class="analysis-dashboard">
+            <div class="metric-card" id="mc-1"><div class="gauge-wrap"><svg class="gauge-svg" width="56" height="56" viewBox="0 0 56 56"><circle class="gauge-bg" cx="28" cy="28" r="22"/><circle class="gauge-fill" id="gf-1" cx="28" cy="28" r="22" stroke="#ef4444"/></svg><div class="gauge-text" id="gv-1">—</div></div><div class="metric-label">Expansão Tecidual</div><div class="metric-status" id="ms-1">Aguardando</div></div>
+            <div class="metric-card" id="mc-2"><div class="gauge-wrap"><svg class="gauge-svg" width="56" height="56" viewBox="0 0 56 56"><circle class="gauge-bg" cx="28" cy="28" r="22"/><circle class="gauge-fill" id="gf-2" cx="28" cy="28" r="22" stroke="#ef4444"/></svg><div class="gauge-text" id="gv-2">—</div></div><div class="metric-label">Potencial de Crescimento</div><div class="metric-status" id="ms-2">Aguardando</div></div>
+            <div class="metric-card" id="mc-3"><div class="gauge-wrap"><svg class="gauge-svg" width="56" height="56" viewBox="0 0 56 56"><circle class="gauge-bg" cx="28" cy="28" r="22"/><circle class="gauge-fill" id="gf-3" cx="28" cy="28" r="22" stroke="#ef4444"/></svg><div class="gauge-text" id="gv-3">—</div></div><div class="metric-label">Índice Vascular</div><div class="metric-status" id="ms-3">Aguardando</div></div>
+            <div class="metric-card" id="mc-4"><div class="gauge-wrap"><svg class="gauge-svg" width="56" height="56" viewBox="0 0 56 56"><circle class="gauge-bg" cx="28" cy="28" r="22"/><circle class="gauge-fill" id="gf-4" cx="28" cy="28" r="22" stroke="#ef4444"/></svg><div class="gauge-text" id="gv-4">—</div></div><div class="metric-label">Resposta Hormonal</div><div class="metric-status" id="ms-4">Aguardando</div></div>
+            <div class="analysis-center" id="mc-center"><svg class="center-icon" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="19" stroke="#333" stroke-width="2"/><path d="M12 20l5 5 11-10" stroke="#444" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" id="check-path"/></svg><div><div class="center-label">Compatibilidade com Protocolo</div><div class="center-value" id="center-value">Calculando...</div></div></div>
+        </div>
+    </div>
 
-        let step = 0;
-        let qIdx = 0;
-        const totalQ = QUESTIONS.length;
+    <!-- TELA 5 -->
+    <div id="s-4" class="screen">
+        <div class="fixed-header">✓ AVALIAÇÃO CONCLUÍDA</div>
+        <h2 style="font-size:clamp(17px,4.8vw,20px);font-weight:900;margin-bottom:18px">SEU PLANO PERSONALIZADO DE 45 DIAS ESTÁ PRONTO</h2>
+        <div class="result-hero"><div class="result-label">VOCÊ PODE GANHAR</div><div class="result-number">4 – 7 CM</div><div class="result-label">DE COMPRIMENTO + GROSSURA</div><p class="result-subtext">Baseado no seu nível vascular, histórico de ereção e urgência declarada</p></div>
+        <div class="urgency-timer">⚠️ <span id="access-count">47</span> HOMENS PEGARAM ACESSO NAS ÚLTIMAS 4 HORAS</div>
+        <div class="benefit-list">
+            <div class="benefit-item"><span>✓</span> Ganhe de 3 a 7cm de comprimento PERMANENTE</div>
+            <div class="benefit-item"><span>✓</span> Primeiras medições visíveis em apenas 21 dias</div>
+            <div class="benefit-item"><span>✓</span> Ereções 3x mais firmes e duradouras a partir do dia 30</div>
+            <div class="benefit-item"><span>✓</span> Zero cirurgias, aparelhos ou medicamentos</div>
+            <div class="benefit-item"><span>✓</span> Ela vai SENTIR a diferença (e te agradecer)</div>
+            <div class="benefit-item"><span>✓</span> Garantia incondicional de 30 dias</div>
+        </div>
+        <div class="social-proof-live">🟢 <span id="live-watching">23</span> pessoas visualizando esta oferta agora</div>
+        <div class="guarantee-box"><img src="https://doram.shop/wp-content/uploads/2026/03/img-pro-ok.png" class="guarantee-badge" alt="Garantia"><div class="guarantee-text"><p style="font-weight:900;color:#fff">MÉTODO BICARBONATO</p><p style="font-weight:900;color:var(--green)">GARANTIA TOTAL DE 30 DIAS</p><p style="color:var(--muted)">Satisfação 100% ou seu dinheiro de volta</p></div></div>
+        <button class="btn-next" onclick="finish()">ACESSAR MEU PLANO DE 45 DIAS AGORA</button>
+        <p class="secure-footer">🔒 Compra 100% Segura e Sigilosa • Acesso Imediato</p>
+    </div>
 
-        function next() {
-            if (step === 0) {
-                step = 1;
-                startModalDelay();
-            } else if (step === 1) {
-                step = 2;
-            } else if (step === 2) {
-                if (qIdx < totalQ - 1) {
-                    qIdx++;
-                } else {
-                    step = 3;
-                    startProcessing();
-                }
-            }
-            render();
-        }
+</div>
 
-        function sel(id, val) {
-            setTimeout(next, 120);
-        }
+<script>
+const CHECKOUT='https://pay.wiapy.com/LJuEuullf4';
 
-        function finish() {
-            window.location.href = CHECKOUT_URL;
-        }
+/* ========== PLAYER ========== */
+var vid          = document.getElementById('main-video');
+var thumb        = document.getElementById('player-thumb');
+var controls     = document.getElementById('player-controls');
+var progPlayed   = document.getElementById('prog-played');
+var progBuffered = document.getElementById('prog-buffered');
+var progTrack    = document.getElementById('prog-track');
+var ctrlTime     = document.getElementById('ctrl-time');
+var ppIcon       = document.getElementById('pp-icon');
+var volIcon      = document.getElementById('vol-icon');
+var volSlider    = document.getElementById('vol-slider');
+var vidSpinner   = document.getElementById('vid-spinner');
+var centerFlash  = document.getElementById('center-flash');
+var cfIcon       = document.getElementById('cf-icon');
 
-        function render() {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById('s-' + step).classList.add('active');
+var isPlaying    = false;
+var hideTimer    = null;
+var started      = false;
 
-            if (step === 2) {
-                const q = QUESTIONS[qIdx];
-                document.getElementById('q-num').textContent = qIdx + 1;
-                document.getElementById('p-fill').style.width = ((qIdx + 1) / totalQ * 100) + '%';
-                document.getElementById('q-box').innerHTML = `
-                    <div class="question-text">${q.t}</div>
-                    ${q.sub ? `<p style="font-size:12px;color:var(--muted);font-weight:700;margin:-10px 0 16px;text-align:left;">${q.sub}</p>` : ''}
-                    <div class="options-grid">
-                        ${q.o.map((o, i) => `
-                            <button class="option-btn" onclick="sel('${q.id}', ${i})">
-                                ${ICONS[o.icon] || ''}
-                                <span>${o.text}</span>
-                            </button>
-                        `).join('')}
-                    </div>
-                `;
-                document.querySelector('.quiz-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
+/* Play/Pause icons */
+var ICON_PLAY  = '<polygon points="5,3 19,12 5,21"/>';
+var ICON_PAUSE = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+var ICON_VOL   = '<polygon points="11,5 6,9 2,9 2,15 6,15 11,19" fill="#fff"/><path d="M15.54 8.46a5 5 0 010 7.07" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/><path d="M19.07 4.93a10 10 0 010 14.14" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>';
+var ICON_MUTE  = '<polygon points="11,5 6,9 2,9 2,15 6,15 11,19" fill="#fff"/><line x1="23" y1="9" x2="17" y2="15" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="17" y1="9" x2="23" y2="15" stroke="#fff" stroke-width="2" stroke-linecap="round"/>';
 
-        function startModalDelay() {
-            let sIdx = 0;
-            const slides = document.querySelectorAll('#authority-carousel .slide');
-            setInterval(function() {
-                slides.forEach(s => s.classList.remove('active'));
-                sIdx = (sIdx + 1) % slides.length;
-                slides[sIdx].classList.add('active');
-            }, 2200);
-        }
+function fmt(s){
+    s=Math.floor(s||0);
+    return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;
+}
 
-        // ======== PROCESSAMENTO — NOVO SISTEMA DE GAUGES ========
-        function animateGauge(id, pct, color) {
-            const circumference = 138.23;
-            const offset = circumference - (pct / 100) * circumference;
-            const el = document.getElementById('gf-' + id);
-            if (el) {
-                el.style.stroke = color;
-                el.style.strokeDashoffset = offset;
-            }
-            const valEl = document.getElementById('gv-' + id);
-            if (valEl) valEl.textContent = pct + '%';
-        }
+function setPPIcon(playing){
+    ppIcon.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+}
 
-        function activateCard(id) {
-            const card = document.getElementById('mc-' + id);
-            if (card) card.classList.add('active');
-        }
+function flashCenter(playing){
+    cfIcon.innerHTML = playing ? ICON_PAUSE : ICON_PLAY;
+    centerFlash.classList.remove('show');
+    void centerFlash.offsetWidth;
+    centerFlash.classList.add('show');
+}
 
-        function completeCard(id, pct, color) {
-            const card = document.getElementById('mc-' + id);
-            if (card) {
-                card.classList.remove('active');
-                card.classList.add('done');
-                // atualiza cor do gauge para verde
-                const gf = document.getElementById('gf-' + id);
-                if (gf) gf.style.stroke = '#22c55e';
-            }
-            const statusEl = document.getElementById('ms-' + id);
-            if (statusEl) statusEl.textContent = 'Confirmado ✓';
-        }
+function showControls(){
+    controls.classList.remove('hide');
+    clearTimeout(hideTimer);
+    if(isPlaying) hideTimer = setTimeout(function(){ controls.classList.add('hide'); }, 3000);
+}
 
-        const METRIC_DATA = [
-            { id: 1, pct: 87, label: 'Expansão Tecidual' },
-            { id: 2, pct: 91, label: 'Potencial Crescimento' },
-            { id: 3, pct: 78, label: 'Índice Vascular' },
-            { id: 4, pct: 94, label: 'Resposta Hormonal' },
-        ];
-
-        const SPINNER_LABELS = [
-            'Verificando dados biométricos...',
-            'Calculando capacidade de expansão...',
-            'Analisando índice vascular...',
-            'Mapeando resposta hormonal...',
-            'Compilando diagnóstico final...',
-        ];
-
-        function startProcessing() {
-            const stepDelay = 600; // cada métrica em intervalos
-            const totalDuration = 3500; // total ~3.5s antes de redirecionar
-
-            // Ativar e animar cards em sequência rápida
-            METRIC_DATA.forEach(function(m, i) {
-                // Ativar
-                setTimeout(function() {
-                    activateCard(m.id);
-                    const spinnerLabel = document.getElementById('spinner-label');
-                    if (spinnerLabel) spinnerLabel.textContent = SPINNER_LABELS[i];
-                    animateGauge(m.id, 0, '#ef4444');
-                }, i * stepDelay);
-
-                // Animar até o valor
-                setTimeout(function() {
-                    animateGauge(m.id, m.pct, '#22c55e');
-                }, i * stepDelay + 150);
-
-                // Completar
-                setTimeout(function() {
-                    completeCard(m.id, m.pct);
-                }, i * stepDelay + 550);
-            });
-
-            // Card central — resultado final
-            setTimeout(function() {
-                const spinnerLabel = document.getElementById('spinner-label');
-                if (spinnerLabel) spinnerLabel.textContent = SPINNER_LABELS[4];
-            }, METRIC_DATA.length * stepDelay);
-
-            setTimeout(function() {
-                const center = document.getElementById('mc-center');
-                if (center) center.classList.add('done');
-                const cv = document.getElementById('center-value');
-                if (cv) cv.textContent = 'COMPATÍVEL — Plano Pronto ✓';
-                const checkPath = document.getElementById('check-path');
-                if (checkPath) checkPath.style.stroke = '#22c55e';
-                const spinnerWrap = document.getElementById('spinner-wrap');
-                if (spinnerWrap) spinnerWrap.style.opacity = '0';
-            }, METRIC_DATA.length * stepDelay + 800);
-
-            // Redirecionar para próxima tela após ~4s
-            setTimeout(function() {
-                step = 4;
-                render();
-            }, 5000);
-        }
-
-        // ===== SOCIAL PROOF DINÂMICO =====
-        setInterval(function() {
-            const el = document.getElementById('online-count-val');
-            if (el) {
-                const cur = parseInt(el.textContent);
-                el.textContent = Math.max(135, Math.min(172, cur + Math.floor(Math.random() * 6) - 2));
-            }
-            const accessEl = document.getElementById('access-count');
-            if (accessEl && Math.random() > 0.65) {
-                const cur = parseInt(accessEl.textContent);
-                accessEl.textContent = Math.max(42, Math.min(56, cur + (Math.random() > 0.5 ? 1 : -1)));
-            }
-            const liveEl = document.getElementById('live-watching');
-            if (liveEl) {
-                const cur = parseInt(liveEl.textContent);
-                liveEl.textContent = Math.max(18, Math.min(31, cur + Math.floor(Math.random() * 3) - 1));
-            }
-        }, 3500);
-
-        // ===== STICKY VIDEO =====
-        let videoFixed = false;
-        window.addEventListener('scroll', function() {
-            if (step !== 0) return;
-            const videoContainer = document.getElementById('video-container');
-            const placeholder = document.querySelector('.video-placeholder');
-            const rect = videoContainer.getBoundingClientRect();
-            if (rect.top <= 0 && !videoFixed) {
-                videoFixed = true;
-                videoContainer.classList.add('sticky');
-                placeholder.classList.add('show');
-            } else if (window.scrollY === 0 && videoFixed) {
-                videoFixed = false;
-                videoContainer.classList.remove('sticky');
-                placeholder.classList.remove('show');
-            }
+/* Primeiro clique: iniciar vídeo */
+function handlePlayerClick(){
+    if(!started){
+        started = true;
+        thumb.classList.add('hidden');
+        vidSpinner.classList.add('show');
+        vid.play().then(function(){
+            vidSpinner.classList.remove('show');
+            isPlaying = true;
+            setPPIcon(true);
+            showControls();
+        }).catch(function(){
+            vidSpinner.classList.remove('show');
+            thumb.classList.remove('hidden');
+            started = false;
         });
+    } else {
+        togglePlay(null);
+    }
+}
 
-        // ===== WISTIA POPOVER OFF =====
-        window._wq = window._wq || [];
-        _wq.push({ id: "pmj228oqei", onReady: function(video) {
-            video.popover(false);
-            video.suppressPopover = true;
-        }});
+function togglePlay(e){
+    if(e){ e.stopPropagation(); }
+    if(vid.paused){
+        vid.play();
+        isPlaying = true;
+        setPPIcon(true);
+        flashCenter(true);
+    } else {
+        vid.pause();
+        isPlaying = false;
+        setPPIcon(false);
+        flashCenter(false);
+    }
+    showControls();
+}
 
-        render();
-    </script>
+function toggleMute(e){
+    if(e) e.stopPropagation();
+    vid.muted = !vid.muted;
+    volIcon.innerHTML = vid.muted ? ICON_MUTE : ICON_VOL;
+    volSlider.value   = vid.muted ? 0 : vid.volume;
+}
+
+function setVolume(v){
+    vid.volume = v;
+    vid.muted  = (v == 0);
+    volIcon.innerHTML = (v == 0) ? ICON_MUTE : ICON_VOL;
+}
+
+function seekVideo(e){
+    e.stopPropagation();
+    if(!vid.duration) return;
+    var rect = progTrack.getBoundingClientRect();
+    var pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    vid.currentTime = pct * vid.duration;
+    showControls();
+}
+
+function seekPreview(e){ /* hover highlight handled by CSS */ }
+
+function stopProp(e){ e.stopPropagation(); }
+
+function toggleFullscreen(e){
+    if(e) e.stopPropagation();
+    var el = document.getElementById('player-wrap');
+    if(document.fullscreenElement){
+        document.exitFullscreen && document.exitFullscreen();
+    } else {
+        el.requestFullscreen ? el.requestFullscreen() :
+        el.webkitRequestFullscreen ? el.webkitRequestFullscreen() : null;
+    }
+}
+
+/* Progress update */
+vid.addEventListener('timeupdate', function(){
+    if(!vid.duration) return;
+    var pct = (vid.currentTime / vid.duration) * 100;
+    progPlayed.style.width = pct + '%';
+    ctrlTime.textContent = fmt(vid.currentTime) + ' / ' + fmt(vid.duration);
+});
+
+/* Buffered */
+vid.addEventListener('progress', function(){
+    if(vid.buffered.length && vid.duration){
+        var b = (vid.buffered.end(vid.buffered.length-1) / vid.duration) * 100;
+        progBuffered.style.width = b + '%';
+    }
+});
+
+/* Waiting / playing */
+vid.addEventListener('waiting',  function(){ vidSpinner.classList.add('show'); });
+vid.addEventListener('playing',  function(){ vidSpinner.classList.remove('show'); isPlaying=true; setPPIcon(true); });
+vid.addEventListener('pause',    function(){ isPlaying=false; setPPIcon(false); showControls(); });
+vid.addEventListener('ended',    function(){ isPlaying=false; setPPIcon(false); showControls(); });
+
+/* Show controls on touch/mouse move over player */
+document.getElementById('player-wrap').addEventListener('mousemove', showControls);
+document.getElementById('player-wrap').addEventListener('touchstart', showControls, {passive:true});
+
+function stopVideo(){ try{ vid.pause(); vid.currentTime=0; }catch(e){} }
+function goNext(){ stopVideo(); next(); }
+
+/* ========== QUIZ ========== */
+const ICONS={sad:'<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5-2 4-2 4 2 4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',warning:'<svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',neutral:'<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',ok:'<svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',fire:'<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M12 2c0 6-8 8-8 14a8 8 0 0016 0c0-4-2-7-4-9-1 3-4 4-4 4z"/></svg>',clock:'<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',search:'<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',target:'<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'};
+const QUESTIONS=[{id:'rigidez',t:'Com que frequência você consegue atingir rigidez TOTAL durante uma relação sexual?',sub:'Esse dado revela seu nível de vascularização peniana',o:[{icon:'sad',text:'Quase nunca — fico mole antes de terminar'},{icon:'warning',text:'Raramente — acontece mas é instável'},{icon:'neutral',text:'Às vezes — depende do dia'},{icon:'ok',text:'Frequentemente — só falha ocasionalmente'},{icon:'fire',text:'Sempre — sem nenhuma dificuldade'}]},{id:'matinal',t:'Você ainda acorda com ereção matinal (o "sinal de testosterona")?',sub:'Indicador clínico direto dos seus níveis hormonais',o:[{icon:'sad',text:'Nunca — faz muito tempo que não acontece'},{icon:'warning',text:'Raramente — 1 vez por semana ou menos'},{icon:'ok',text:'Quase todos os dias — meu corpo ainda responde bem'}]},{id:'manutencao',t:'Você consegue manter a ereção firme do início ao FIM da relação?',sub:'Esse fator define a eficácia do protocolo para você',o:[{icon:'sad',text:'Não — perco antes de terminar com frequência'},{icon:'warning',text:'Às vezes — falha na hora mais crítica'},{icon:'ok',text:'Sim — sem problemas para manter até o fim'}]},{id:'libido',t:'Como está seu desejo sexual nos últimos 3 meses?',sub:'O libido revela o estado atual da sua testosterona livre',o:[{icon:'sad',text:'Muito baixo — raramente sinto vontade'},{icon:'warning',text:'Baixo — preciso de muito estímulo'},{icon:'neutral',text:'Normal — nada me preocupa muito'},{icon:'fire',text:'Alto — só quero resultados físicos melhores'}]},{id:'prioridade',t:'Ser maior e ter mais controle nas relações é uma prioridade REAL para você agora?',sub:'Sua resposta define o plano ideal para o seu perfil',o:[{icon:'target',text:'SIM — quero resolver isso o quanto antes'},{icon:'clock',text:'Sim — mas posso esperar um pouco'},{icon:'search',text:'Estou apenas pesquisando por agora'}]}];
+let step=0,qIdx=0;const totalQ=QUESTIONS.length;
+function next(){if(step===0){step=1;startCarousel()}else if(step===1){step=2}else if(step===2){if(qIdx<totalQ-1){qIdx++}else{step=3;startProcessing()}}render()}
+function sel(id,val){setTimeout(next,120)}
+function finish(){window.location.href=CHECKOUT}
+function render(){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById('s-'+step).classList.add('active');if(step===2){var q=QUESTIONS[qIdx];document.getElementById('q-num').textContent=qIdx+1;document.getElementById('p-fill').style.width=((qIdx+1)/totalQ*100)+'%';document.getElementById('q-box').innerHTML='<div class="question-text">'+q.t+'</div>'+(q.sub?'<p style="font-size:12px;color:var(--muted);font-weight:700;margin:-10px 0 16px;text-align:left">'+q.sub+'</p>':'')+'<div class="options-grid">'+q.o.map(function(o,i){return'<button class="option-btn" onclick="sel(\''+q.id+'\','+i+')">'+(ICONS[o.icon]||'')+'<span>'+o.text+'</span></button>'}).join('')+'</div>';document.querySelector('.quiz-card').scrollIntoView({behavior:'smooth',block:'start'})}}
+function startCarousel(){var sIdx=0;var slides=document.querySelectorAll('#authority-carousel .slide');setInterval(function(){slides.forEach(function(s){s.classList.remove('active')});sIdx=(sIdx+1)%slides.length;slides[sIdx].classList.add('active')},2200)}
+function animateGauge(id,pct){var offset=138.23-(pct/100)*138.23;var el=document.getElementById('gf-'+id);if(el){el.style.stroke='#22c55e';el.style.strokeDashoffset=offset}var valEl=document.getElementById('gv-'+id);if(valEl)valEl.textContent=pct+'%'}
+function activateCard(id){var card=document.getElementById('mc-'+id);if(card)card.classList.add('active')}
+function completeCard(id){var card=document.getElementById('mc-'+id);if(card){card.classList.remove('active');card.classList.add('done')}var gf=document.getElementById('gf-'+id);if(gf)gf.style.stroke='#22c55e';var st=document.getElementById('ms-'+id);if(st)st.textContent='Confirmado ✓'}
+var METRIC_DATA=[{id:1,pct:87},{id:2,pct:91},{id:3,pct:78},{id:4,pct:94}];
+var SPINNER_LABELS=['Verificando dados biométricos...','Calculando capacidade de expansão...','Analisando índice vascular...','Mapeando resposta hormonal...','Compilando diagnóstico final...'];
+function startProcessing(){var stepDelay=600;METRIC_DATA.forEach(function(m,i){setTimeout(function(){activateCard(m.id);var sl=document.getElementById('spinner-label');if(sl)sl.textContent=SPINNER_LABELS[i]},i*stepDelay);setTimeout(function(){animateGauge(m.id,m.pct)},i*stepDelay+150);setTimeout(function(){completeCard(m.id)},i*stepDelay+550)});setTimeout(function(){var sl=document.getElementById('spinner-label');if(sl)sl.textContent=SPINNER_LABELS[4]},METRIC_DATA.length*stepDelay);setTimeout(function(){var center=document.getElementById('mc-center');if(center)center.classList.add('done');var cv=document.getElementById('center-value');if(cv)cv.textContent='COMPATÍVEL — Plano Pronto ✓';var cp=document.getElementById('check-path');if(cp)cp.style.stroke='#22c55e';var sw=document.getElementById('spinner-wrap');if(sw)sw.style.opacity='0'},METRIC_DATA.length*stepDelay+800);setTimeout(function(){step=4;render()},5000)}
+setInterval(function(){var el=document.getElementById('online-count-val');if(el){var c=parseInt(el.textContent);el.textContent=Math.max(135,Math.min(172,c+Math.floor(Math.random()*6)-2))}var ae=document.getElementById('access-count');if(ae&&Math.random()>0.65){var c=parseInt(ae.textContent);ae.textContent=Math.max(42,Math.min(56,c+(Math.random()>0.5?1:-1)))}var le=document.getElementById('live-watching');if(le){var c=parseInt(le.textContent);le.textContent=Math.max(18,Math.min(31,c+Math.floor(Math.random()*3)-1))}},3500);
+render();
+</script>
 </body>
 </html>
