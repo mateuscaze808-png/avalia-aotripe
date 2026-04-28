@@ -6,6 +6,24 @@
     <meta name="theme-color" content="#050505">
     <title>Consulta Profissional - Protocolo BICARBONATO</title>
 
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init','1684876339545045');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id= 1684876339545045&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root{--primary:#ef4444;--bg:#050505;--card:#111111;--text:#ffffff;--muted:#9ca3af;--border:#262626;--green:#22c55e}
@@ -26,10 +44,104 @@
         .option-btn:hover,.option-btn:active{border-color:var(--primary);background:rgba(239,68,68,.1)}
         .option-btn svg{flex-shrink:0;width:20px;height:20px;opacity:.75}
         .urgency-badge{background:rgba(34,197,94,.15);border:2px solid var(--green);padding:10px 14px;border-radius:50px;display:inline-block;margin-bottom:18px;font-weight:900;color:var(--green);font-size:clamp(10px,2.8vw,12px);line-height:1.3}
-        .carousel{width:100%;height:clamp(180px,45vw,250px);background:#000;border-radius:14px;margin:14px 0;overflow:hidden;position:relative;border:1px solid var(--border)}
-        .slide{position:absolute;inset:0;opacity:0;transition:opacity .6s ease;display:flex;align-items:center;justify-content:center}
-        .slide.active{opacity:1}.slide img{width:100%;height:100%;object-fit:contain}
-        .slide-caption{position:absolute;bottom:8px;left:8px;right:8px;background:rgba(0,0,0,.85);padding:7px 10px;border-radius:8px;font-size:clamp(9px,2.5vw,11px);font-weight:700;color:var(--green);border:1px solid rgba(34,197,94,.3);text-align:center;z-index:10}
+
+        /* ===== VIDEO PLAYER PRINCIPAL (Tela 01) ===== */
+        .video-wrap{
+            position:relative;width:100%;background:#000;
+            border-radius:14px;overflow:hidden;margin-bottom:10px;
+            border:2px solid var(--primary);
+            aspect-ratio:9/16;
+            box-shadow:0 0 30px rgba(239,68,68,.25);
+        }
+        .video-wrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+
+        /* Grande botão play vermelho — visível quando pausado */
+        .big-play-btn{
+            position:absolute;inset:0;display:flex;flex-direction:column;
+            align-items:center;justify-content:center;z-index:20;cursor:pointer;
+            background:rgba(0,0,0,.45);backdrop-filter:blur(2px);
+            transition:opacity .25s;
+        }
+        .big-play-btn.hidden{opacity:0;pointer-events:none}
+        .big-play-circle{
+            width:80px;height:80px;
+            background:var(--primary);
+            border-radius:50%;
+            display:flex;align-items:center;justify-content:center;
+            box-shadow:0 0 0 12px rgba(239,68,68,.22),0 0 40px rgba(239,68,68,.5);
+            animation:pulse-play 1.8s ease-in-out infinite;
+        }
+        .big-play-circle svg{width:34px;height:34px;fill:#fff;margin-left:5px}
+        .big-play-label{
+            margin-top:14px;
+            font-size:clamp(12px,3.2vw,14px);font-weight:900;
+            color:#fff;text-transform:uppercase;letter-spacing:1.5px;
+            text-shadow:0 2px 8px rgba(0,0,0,.8);
+        }
+        @keyframes pulse-play{
+            0%,100%{box-shadow:0 0 0 12px rgba(239,68,68,.22),0 0 40px rgba(239,68,68,.5)}
+            50%{box-shadow:0 0 0 22px rgba(239,68,68,.08),0 0 60px rgba(239,68,68,.7)}
+        }
+
+        /* Controles inferiores — aparecem só após dar play */
+        .player-controls{
+            position:absolute;bottom:0;left:0;right:0;z-index:30;
+            background:linear-gradient(transparent, rgba(0,0,0,.85));
+            padding:28px 12px 10px;
+            opacity:0;transition:opacity .3s;pointer-events:none;
+        }
+        .video-wrap.playing .player-controls{opacity:1;pointer-events:all}
+        .player-seekbar{width:100%;height:4px;background:rgba(255,255,255,.2);border-radius:10px;cursor:pointer;position:relative;margin-bottom:8px;transition:height .15s}
+        .player-seekbar:hover{height:6px}
+        .player-seekbar-fill{height:100%;background:var(--primary);border-radius:10px;pointer-events:none;position:relative;box-shadow:0 0 6px rgba(239,68,68,.5)}
+        .player-seekbar-thumb{position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;background:#fff;border-radius:50%;box-shadow:0 0 4px rgba(0,0,0,.5)}
+        .player-bottom{display:flex;align-items:center;gap:10px}
+        .player-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .player-btn svg{width:22px;height:22px;fill:#fff;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+        .player-time{font-size:11px;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.5px;flex:1;text-align:left}
+
+        /* ===== TELA 02 — VÍDEO DEPOIMENTO ===== */
+        .dep-video-wrap{
+            position:relative;width:100%;
+            background:#000;border-radius:14px;overflow:hidden;
+            margin:14px 0;border:1px solid var(--border);aspect-ratio:9/16;
+        }
+        .dep-video-wrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+        .dep-badge{
+            position:absolute;bottom:10px;left:10px;right:10px;
+            background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+            border:1px solid rgba(34,197,94,.4);border-radius:10px;
+            padding:8px 12px;font-size:clamp(10px,2.8vw,12px);font-weight:900;
+            color:var(--green);text-align:center;z-index:10;
+        }
+        .dep-sound-bar{
+            position:absolute;top:12px;left:12px;right:12px;
+            display:flex;align-items:center;gap:10px;
+            background:rgba(0,0,0,.78);backdrop-filter:blur(8px);
+            border:1.5px solid rgba(239,68,68,.6);border-radius:10px;
+            padding:10px 13px;z-index:20;cursor:pointer;
+            transition:opacity .3s,transform .3s;
+        }
+        .dep-sound-bar.hidden{opacity:0;pointer-events:none;transform:translateY(-6px)}
+        .dep-sound-bar-icon{font-size:20px;flex-shrink:0;animation:bounce-icon .8s ease-in-out infinite alternate}
+        .dep-sound-bar-text{font-size:clamp(12px,3.2vw,13px);font-weight:900;color:#fff;line-height:1.3;text-align:left}
+        .dep-sound-bar-text span{color:var(--primary)}
+        @keyframes bounce-icon{from{transform:scale(1)}to{transform:scale(1.25)}}
+
+        /* ===== TELA 05 — DEPOIMENTOS MINI ===== */
+        .dep-mini-wrap{display:flex;align-items:center;gap:12px;background:#0a0a0a;border:1px solid var(--border);border-radius:14px;padding:10px;margin:12px 0;overflow:hidden;}
+        .dep-mini-thumb{position:relative;flex-shrink:0;width:90px;height:160px;background:#000;border-radius:10px;overflow:hidden;border:1px solid #222;}
+        .dep-mini-thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+        .dep-mini-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);z-index:5;cursor:pointer;transition:background .2s;}
+        .dep-mini-play:hover{background:rgba(0,0,0,.2)}
+        .dep-mini-play svg{width:28px;height:28px;fill:#fff;filter:drop-shadow(0 1px 4px rgba(0,0,0,.6))}
+        .dep-mini-info{flex:1;text-align:left}
+        .dep-mini-label{font-size:clamp(9px,2.4vw,10px);font-weight:900;color:var(--primary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+        .dep-mini-quote{font-size:clamp(12px,3.2vw,13px);font-weight:700;color:#fff;line-height:1.45;margin-bottom:8px}
+        .dep-mini-author{font-size:clamp(10px,2.6vw,11px);font-weight:700;color:var(--green)}
+        .dep-mini-stars{color:#f59e0b;font-size:13px;margin-bottom:2px}
+
+        /* ===== ANÁLISE ===== */
         .analysis-dashboard{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
         .metric-card{background:#0a0a0a;border:1px solid var(--border);border-radius:12px;padding:14px 12px;text-align:center;position:relative;overflow:hidden;transition:border-color .4s ease}
         .metric-card.active{border-color:var(--primary)}.metric-card.done{border-color:var(--green)}
@@ -49,6 +161,8 @@
         .center-icon{width:40px;height:40px;flex-shrink:0}
         .center-label{font-size:clamp(9px,2.5vw,11px);font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
         .center-value{font-size:clamp(14px,4vw,17px);font-weight:900;color:#fff}
+
+        /* ===== OFERTA ===== */
         .result-hero{background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(34,197,94,.05));border:3px solid var(--green);padding:clamp(16px,4vw,24px) clamp(14px,3.5vw,22px);border-radius:20px;margin:20px 0;box-shadow:0 15px 40px rgba(34,197,94,.2);text-align:center}
         .result-label{font-size:clamp(10px,2.8vw,12px);color:#9ca3af;text-transform:uppercase;letter-spacing:1.5px;font-weight:700;margin-bottom:6px}
         .result-number{font-size:clamp(30px,8vw,38px);font-weight:900;color:var(--green);line-height:1;margin:8px 0;text-shadow:0 0 20px rgba(34,197,94,.45);letter-spacing:-1px}
@@ -62,75 +176,38 @@
         .guarantee-text{text-align:left}.guarantee-text p{font-size:clamp(11px,3vw,13px);line-height:1.4}
         .social-proof-live{font-size:clamp(11px,3vw,13px);color:var(--green);font-weight:700;margin:14px 0}
         .question-text{font-size:clamp(17px,4.8vw,22px);font-weight:900;margin-bottom:18px;line-height:1.35;text-align:left}
-
-        /* ===== VIDEO PLAYER ===== */
-        .video-wrap{position:relative;width:100%;background:#000;border-radius:14px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border);aspect-ratio:9/16}
-        .video-wrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-
-        .video-loading{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:20;gap:12px}
-        .video-loading.hidden{display:none}
-        .vl-spinner{width:36px;height:36px;border:3px solid #333;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
-        .vl-text{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-
-        .play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:15;pointer-events:none;opacity:0;transition:opacity .25s}
-        .play-overlay.visible{opacity:1}
-        .play-overlay-btn{width:64px;height:64px;background:rgba(0,0,0,.65);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);border:2px solid rgba(255,255,255,.2)}
-        .play-overlay-btn svg{width:28px;height:28px;fill:#fff;margin-left:4px}
-
-        .player-controls{position:absolute;bottom:0;left:0;right:0;z-index:30;background:linear-gradient(transparent, rgba(0,0,0,.85));padding:28px 12px 10px}
-        .player-seekbar{width:100%;height:4px;background:rgba(255,255,255,.2);border-radius:10px;cursor:pointer;position:relative;margin-bottom:8px;transition:height .15s}
-        .player-seekbar:hover{height:6px}
-        .player-seekbar-fill{height:100%;background:var(--primary);border-radius:10px;pointer-events:none;position:relative;box-shadow:0 0 6px rgba(239,68,68,.5)}
-        .player-seekbar-thumb{position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;background:#fff;border-radius:50%;box-shadow:0 0 4px rgba(0,0,0,.5)}
-        .player-bottom{display:flex;align-items:center;gap:10px}
-        .player-btn{background:none;border:none;cursor:pointer;padding:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-        .player-btn svg{width:22px;height:22px;fill:#fff;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
-        .player-time{font-size:11px;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.5px;flex:1;text-align:left}
-        .player-vol svg{transition:opacity .2s}
-        .player-vol.muted svg{opacity:.4}
-
-        .video-hint{
-            display:flex;align-items:center;justify-content:center;gap:8px;
-            background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.35);
-            border-radius:10px;padding:10px 14px;margin-bottom:16px;
-            animation:pulse-hint 2s ease-in-out infinite;
-        }
-        .video-hint-icon{font-size:18px;flex-shrink:0}
-        .video-hint-text{font-size:clamp(12px,3.2vw,14px);font-weight:900;color:#fff;line-height:1.35;text-align:left}
-        .video-hint-text span{color:var(--primary)}
-        @keyframes pulse-hint{0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,.25)}50%{box-shadow:0 0 0 6px rgba(239,68,68,.0)}}
-        @keyframes spin{to{transform:rotate(360deg)}}
-
         .secure-footer{font-size:clamp(10px,2.5vw,11px);color:var(--muted);margin-top:14px;line-height:1.5}
         .analysis-spinner-wrap{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:18px}
         .spinner-ring{width:48px;height:48px;border:3px solid #222;border-top-color:var(--primary);border-radius:50%;animation:spin .9s linear infinite}
         .spinner-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+        @keyframes spin{to{transform:rotate(360deg)}}
         @media(max-width:380px){body{padding:10px}.quiz-card{padding:16px 14px;border-radius:16px}.btn-next{padding:15px;font-size:15px}}
-        @media(max-height:700px){.carousel{height:160px}}
     </style>
 </head>
 <body>
 <div class="quiz-card">
 
-    <!-- TELA 1: VÍDEO -->
+    <!-- TELA 1: VÍDEO PRINCIPAL -->
     <div id="s-0" class="screen active">
-        <div class="fixed-header">PROTOCOLO BICARBONATO — 3 INGREDINTES</div>
-        <h1 class="headline">O SEGREDO DOS ATORES PÔRNO PARA ATIVAR O CRESCIMENTO DO PÊNIS EM 45 DIAS.</h1>
-        <p class="sub-headline">AUMENTE SEU PÊNIS ATÉ 7CM EM 45 DIAS SEM CIRURGIA OU APARELHOS VEJA O VÍDEO</p>
+        <div class="fixed-header">PROTOCOLO BICARBONATO — 3 INGREDIENTES</div>
+        <h1 class="headline">O SEGREDO DOS ATORES PARA ATIVAR O CRESCIMENTO DO PÊNIS EM 45 DIAS.</h1>
+        <p class="sub-headline">AUMENTE ATÉ 7CM DO SEU PÊNIS EM 45 DIAS SEM CIRURGIA OU APARELHOS — ASSISTA O VÍDEO</p>
 
         <div class="video-wrap" id="video-wrap">
-            <div class="video-loading" id="video-loading">
-                <div class="vl-spinner"></div>
-                <div class="vl-text">Carregando vídeo...</div>
-            </div>
             <video id="main-video" playsinline webkit-playsinline preload="auto">
                 <source src="https://doram.shop/wp-content/uploads/2026/03/0322-1.mp4" type="video/mp4">
             </video>
-            <div class="play-overlay" id="play-overlay">
-                <div class="play-overlay-btn">
+
+            <!-- Botão grande vermelho centralizado -->
+            <div class="big-play-btn" id="big-play-btn" onclick="bigPlay()">
+                <div class="big-play-circle">
                     <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
                 </div>
+                <div class="big-play-label">▶ Toque para assistir</div>
             </div>
+
+            <!-- Controles inferiores — visíveis só após play -->
             <div class="player-controls">
                 <div class="player-seekbar" id="seekbar">
                     <div class="player-seekbar-fill" id="seekbar-fill" style="width:0%">
@@ -138,12 +215,12 @@
                     </div>
                 </div>
                 <div class="player-bottom">
-                    <button class="player-btn" id="play-btn" onclick="togglePlay()">
+                    <button class="player-btn" onclick="togglePlay()">
                         <svg id="icon-pause" viewBox="0 0 24 24"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
                         <svg id="icon-play" viewBox="0 0 24 24" style="display:none"><polygon points="5,3 19,12 5,21"/></svg>
                     </button>
                     <span class="player-time" id="player-time">0:00 / 0:00</span>
-                    <button class="player-btn player-vol" id="vol-btn" onclick="toggleMute()" style="cursor:pointer">
+                    <button class="player-btn" onclick="toggleMute()">
                         <svg id="icon-vol-on" viewBox="0 0 24 24">
                             <path d="M11 5L6 9H2v6h4l5 4V5z"/>
                             <path d="M19.07 4.93a10 10 0 010 14.14" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none"/>
@@ -159,28 +236,27 @@
             </div>
         </div>
 
-        <div class="video-hint" id="video-hint">
-            <div class="video-hint-icon">👆</div>
-            <div class="video-hint-text">
-                <span>Toque no vídeo</span> para assistir com som!<br>
-                Ative o áudio para ver o protocolo completo.
-            </div>
-        </div>
-
         <button class="btn-next" onclick="goNext()">🔓 LIBERAR MINHA FÓRMULA AGORA</button>
     </div>
 
-    <!-- TELA 2: AUTORIDADE -->
+    <!-- TELA 2: DEPOIMENTO EM VÍDEO -->
     <div id="s-1" class="screen">
-        <div class="fixed-header">AVALIAÇÃO PERSONALIZADA GRATUITA</div>
-        <h2 class="headline">DESCUBRA QUANTO VOCÊ PODE CRESCER EM 45 DIAS</h2>
+        <div class="fixed-header">RESULTADO REAL — DEPOIMENTO VERIFICADO</div>
+        <h2 class="headline">VEJA QUEM JÁ USOU O PROTOCOLO</h2>
         <div class="urgency-badge">🟢 <span id="online-count-val">147</span> HOMENS FAZENDO AVALIAÇÃO AGORA</div>
-        <div class="carousel" id="authority-carousel">
-            <div class="slide active"><img src="https://metodotripe.shop/wp-content/uploads/2026/02/02-.jpg" alt="Resultado"><div class="slide-caption">PACIENTE M. SOUZA: +5.8cm (VALIDADO ✓)</div></div>
-            <div class="slide"><img src="https://metodotripe.shop/wp-content/uploads/2026/01/22109742.jpg" alt="Resultado"><div class="slide-caption">PACIENTE R. OLIVEIRA: +4.9cm (VALIDADO ✓)</div></div>
-            <div class="slide"><img src="https://metodotripe.shop/wp-content/uploads/2026/01/meaSaaTbaAaaaamhD_iLJzfk9u2QO-ZC1.jpg" alt="Estudo"><div class="slide-caption">ESTUDO CLÍNICO: EXPANSÃO TECIDUAL ATIVA</div></div>
+
+        <div class="dep-video-wrap">
+            <div class="dep-sound-bar hidden" id="dep-sound-bar" onclick="unmuteDepVid()">
+                <div class="dep-sound-bar-icon">🔊</div>
+                <div class="dep-sound-bar-text"><span>Toque aqui para ativar o som</span> do depoimento</div>
+            </div>
+            <video id="dep-video" playsinline webkit-playsinline preload="auto" muted>
+                <source src="https://metodotripe.shop/wp-content/uploads/2026/04/01.mp4" type="video/mp4">
+            </video>
+            <div class="dep-badge">✅ DEPOIMENTO REAL — RESULTADO VERIFICADO</div>
         </div>
-        <button class="btn-next" onclick="next()">INICIAR MINHA AVALIAÇÃO GRATUITA</button>
+
+        <button class="btn-next" onclick="goNextS1()">QUERO O MESMO RESULTADO — FAZER AVALIAÇÃO</button>
     </div>
 
     <!-- TELA 3: QUIZ -->
@@ -218,6 +294,61 @@
             <div class="benefit-item"><span>✓</span> Ela vai SENTIR a diferença (e te agradecer)</div>
             <div class="benefit-item"><span>✓</span> Garantia incondicional de 30 dias</div>
         </div>
+
+        <!-- Depoimento 1 -->
+        <div class="dep-mini-wrap">
+            <div class="dep-mini-thumb">
+                <video id="dep-video-mini-1" playsinline webkit-playsinline preload="metadata" muted loop>
+                    <source src="https://metodotripe.shop/wp-content/uploads/2026/04/01-dep.mp4" type="video/mp4">
+                </video>
+                <div class="dep-mini-play" id="dep-mini-play-btn-1">
+                    <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
+            </div>
+            <div class="dep-mini-info">
+                <div class="dep-mini-label">Marcelo Texeira</div>
+                <div class="dep-mini-stars">★★★★★</div>
+                <div class="dep-mini-quote">"Resultado real em menos de 30 dias. Não acreditava, mas funcionou."</div>
+                <div class="dep-mini-author">✅ Cliente verificado</div>
+            </div>
+        </div>
+
+        <!-- Depoimento 2 -->
+        <div class="dep-mini-wrap">
+            <div class="dep-mini-thumb">
+                <video id="dep-video-mini-2" playsinline webkit-playsinline preload="metadata" muted loop>
+                    <source src="https://metodotripe.shop/wp-content/uploads/2026/04/DEP-02-MEIO.mp4" type="video/mp4">
+                </video>
+                <div class="dep-mini-play" id="dep-mini-play-btn-2">
+                    <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
+            </div>
+            <div class="dep-mini-info">
+                <div class="dep-mini-label">Leandro Pimenta Peres</div>
+                <div class="dep-mini-stars">★★★★★</div>
+                <div class="dep-mini-quote">"Resultado real em menos de 30 dias. Não acreditava, mas funcionou."</div>
+                <div class="dep-mini-author">✅ Cliente verificado</div>
+            </div>
+        </div>
+
+        <!-- Depoimento 3 -->
+        <div class="dep-mini-wrap">
+            <div class="dep-mini-thumb">
+                <video id="dep-video-mini-3" playsinline webkit-playsinline preload="metadata" muted loop>
+                    <source src="https://metodotripe.shop/wp-content/uploads/2026/04/DEP-01-INICIO.mp4" type="video/mp4">
+                </video>
+                <div class="dep-mini-play" id="dep-mini-play-btn-3">
+                    <svg viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+                </div>
+            </div>
+            <div class="dep-mini-info">
+                <div class="dep-mini-label">Lucas Jason da Silva</div>
+                <div class="dep-mini-stars">★★★★★</div>
+                <div class="dep-mini-quote">"Resultado real em menos de 30 dias. Não acreditava, mas funcionou."</div>
+                <div class="dep-mini-author">✅ Cliente verificado</div>
+            </div>
+        </div>
+
         <div class="social-proof-live">🟢 <span id="live-watching">23</span> pessoas visualizando esta oferta agora</div>
         <div class="guarantee-box"><img src="https://metodotripe.shop/wp-content/uploads/2026/04/ChatGPT-Image-19-de-abr.-de-2026-19_12_11-1.png" class="guarantee-badge" alt="Garantia"><div class="guarantee-text"><p style="font-weight:900;color:#fff">MÉTODO BICARBONATO</p><p style="font-weight:900;color:var(--green)">GARANTIA TOTAL DE 30 DIAS</p><p style="color:var(--muted)">Satisfação 100% ou seu dinheiro de volta</p></div></div>
         <button class="btn-next" onclick="finish()">ACESSAR MEU PLANO DE 45 DIAS AGORA</button>
@@ -227,117 +358,325 @@
 </div>
 
 <script>
-const CHECKOUT = 'https://eufacodineirocomhot.com/c/metodo';
-const vid = document.getElementById('main-video');
-const loadingEl = document.getElementById('video-loading');
-const seekbarFill = document.getElementById('seekbar-fill');
-const seekbar = document.getElementById('seekbar');
-const playerTime = document.getElementById('player-time');
-const iconPlay = document.getElementById('icon-play');
-const iconPause = document.getElementById('icon-pause');
-const playOverlay = document.getElementById('play-overlay');
-const iconVolOn = document.getElementById('icon-vol-on');
-const iconVolOff = document.getElementById('icon-vol-off');
-const videoHint = document.getElementById('video-hint');
+var CHECKOUT = 'https://eufacodineirocomhot.com/c/metodo';
 
-function fmtTime(s){
-    if(isNaN(s)||s===Infinity) return '0:00';
-    var m=Math.floor(s/60), sec=Math.floor(s%60);
-    return m+':'+(sec<10?'0':'')+sec;
-}
-function updateIcons(playing){
+/* ===================================================
+   RASTREAMENTO DE INTERAÇÃO
+   Browsers mobile só permitem áudio após gesto do usuário.
+   O big play da tela 1 é o gesto que libera o áudio.
+=================================================== */
+var userInteracted = false;
+function markInteracted(){ userInteracted = true; }
+
+/* ===================================================
+   VÍDEO PRINCIPAL — TELA 01
+   REGRAS:
+   - Começa PAUSADO e MUDO
+   - Botão grande vermelho centralizado com pulso
+   - Ao clicar no big play: desmuta + dá play + esconde o botão
+   - Controles inferiores aparecem só após primeiro play
+   - Clique no vídeo após play iniciado: pausa/retoma
+   - Botão "Liberar" para o vídeo ANTES de mudar de tela
+=================================================== */
+var vid         = document.getElementById('main-video');
+var videoWrap   = document.getElementById('video-wrap');
+var bigPlayBtn  = document.getElementById('big-play-btn');
+var seekbarFill = document.getElementById('seekbar-fill');
+var seekbar     = document.getElementById('seekbar');
+var playerTime  = document.getElementById('player-time');
+var iconPlay    = document.getElementById('icon-play');
+var iconPause   = document.getElementById('icon-pause');
+var iconVolOn   = document.getElementById('icon-vol-on');
+var iconVolOff  = document.getElementById('icon-vol-off');
+
+vid.muted = true; // começa mudo (necessário para preload funcionar)
+
+function updatePlayIcons(playing){
     iconPlay.style.display  = playing ? 'none'  : 'block';
     iconPause.style.display = playing ? 'block' : 'none';
-    if(playing){ playOverlay.classList.remove('visible'); }
-    else        { playOverlay.classList.add('visible');   }
 }
 function updateVolIcon(){
     iconVolOn.style.display  = vid.muted ? 'none'  : 'block';
     iconVolOff.style.display = vid.muted ? 'block' : 'none';
 }
-
-vid.muted = true;
 updateVolIcon();
+updatePlayIcons(false);
 
-setTimeout(function(){
-    loadingEl.classList.add('hidden');
-    vid.play().then(function(){ updateIcons(true); })
-             .catch(function(e){ console.log('Autoplay bloqueado:', e); updateIcons(false); });
-}, 1000);
-
-function unmuteOnInteraction(){
-    if(vid.muted){
-        vid.muted = false;
+// Big play — gesto inicial do usuário, libera áudio no browser
+function bigPlay(){
+    markInteracted();
+    vid.muted = false; // desmuta DENTRO do gesto → browser permite
+    updateVolIcon();
+    vid.play().then(function(){
+        bigPlayBtn.classList.add('hidden');
+        videoWrap.classList.add('playing');
+        updatePlayIcons(true);
+    }).catch(function(){
+        // Fallback: tenta com mute se política de autoplay bloquear
+        vid.muted = true;
         updateVolIcon();
-        videoHint.style.opacity='0';
-        videoHint.style.transition='opacity .4s';
-        setTimeout(function(){ videoHint.style.display='none'; }, 400);
-    }
-    document.removeEventListener('click', unmuteOnInteraction);
-    document.removeEventListener('touchstart', unmuteOnInteraction);
+        vid.play().then(function(){
+            bigPlayBtn.classList.add('hidden');
+            videoWrap.classList.add('playing');
+            updatePlayIcons(true);
+        }).catch(function(){});
+    });
 }
-document.addEventListener('click', unmuteOnInteraction);
-document.addEventListener('touchstart', unmuteOnInteraction);
+
+// Clique direto no vídeo após já estar rodando — pausa/retoma
+vid.addEventListener('click', function(){
+    if(!bigPlayBtn.classList.contains('hidden')) return; // big play ainda visível, ignora
+    togglePlay();
+});
 
 function togglePlay(){
-    if(vid.paused){ vid.play(); updateIcons(true); }
-    else          { vid.pause(); updateIcons(false); }
+    if(vid.paused){
+        vid.play();
+        updatePlayIcons(true);
+        videoWrap.classList.add('playing');
+    } else {
+        vid.pause();
+        updatePlayIcons(false);
+    }
 }
+
 function toggleMute(){
     vid.muted = !vid.muted;
     updateVolIcon();
-    if(!vid.muted){
-        videoHint.style.opacity='0';
-        videoHint.style.transition='opacity .4s';
-        setTimeout(function(){ videoHint.style.display='none'; }, 400);
-    }
 }
 
-vid.addEventListener('click', togglePlay);
-vid.addEventListener('play',  function(){ updateIcons(true);  });
-vid.addEventListener('pause', function(){ updateIcons(false); });
-vid.addEventListener('ended', function(){ updateIcons(false); });
-
+vid.addEventListener('play',  function(){ updatePlayIcons(true); });
+vid.addEventListener('pause', function(){ updatePlayIcons(false); });
+vid.addEventListener('ended', function(){
+    updatePlayIcons(false);
+    bigPlayBtn.classList.remove('hidden');
+    videoWrap.classList.remove('playing');
+});
 vid.addEventListener('timeupdate', function(){
     if(!vid.duration) return;
     var pct = (vid.currentTime / vid.duration) * 100;
     seekbarFill.style.width = pct + '%';
     playerTime.textContent = fmtTime(vid.currentTime) + ' / ' + fmtTime(vid.duration);
 });
-
 seekbar.addEventListener('click', function(e){
     if(!vid.duration) return;
-    var rect = seekbar.getBoundingClientRect();
+    var rect  = seekbar.getBoundingClientRect();
     var ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     vid.currentTime = ratio * vid.duration;
 });
 seekbar.addEventListener('touchstart', function(e){
     e.preventDefault();
-    var touch = e.touches[0];
     if(!vid.duration) return;
-    var rect = seekbar.getBoundingClientRect();
-    var ratio = Math.max(0, Math.min(1, (touch.clientX - rect.left) / rect.width));
+    var rect  = seekbar.getBoundingClientRect();
+    var ratio = Math.max(0, Math.min(1, (e.touches[0].clientX - rect.left) / rect.width));
     vid.currentTime = ratio * vid.duration;
 }, {passive:false});
 
-function stopVideo(){ try{ vid.pause(); vid.currentTime=0; }catch(e){} }
+function fmtTime(s){
+    if(isNaN(s) || s === Infinity) return '0:00';
+    var m = Math.floor(s / 60), sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+// Para o vídeo 1 completamente antes de avançar para tela 2
+function stopVideo(){
+    try{ vid.pause(); vid.currentTime = 0; }catch(e){}
+    bigPlayBtn.classList.remove('hidden');
+    videoWrap.classList.remove('playing');
+    updatePlayIcons(false);
+}
+
 function goNext(){ stopVideo(); next(); }
 
-const ICONS={sad:'<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5-2 4-2 4 2 4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',warning:'<svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',neutral:'<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',ok:'<svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',fire:'<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M12 2c0 6-8 8-8 14a8 8 0 0016 0c0-4-2-7-4-9-1 3-4 4-4 4z"/></svg>',clock:'<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',search:'<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',target:'<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'};
-const QUESTIONS=[{id:'rigidez',t:'Com que frequência você consegue atingir rigidez TOTAL durante uma relação sexual?',sub:'Esse dado revela seu nível de vascularização peniana',o:[{icon:'sad',text:'Quase nunca — fico mole antes de terminar'},{icon:'warning',text:'Raramente — acontece mas é instável'},{icon:'neutral',text:'Às vezes — depende do dia'},{icon:'ok',text:'Frequentemente — só falha ocasionalmente'},{icon:'fire',text:'Sempre — sem nenhuma dificuldade'}]},{id:'matinal',t:'Você ainda acorda com ereção matinal (o "sinal de testosterona")?',sub:'Indicador clínico direto dos seus níveis hormonais',o:[{icon:'sad',text:'Nunca — faz muito tempo que não acontece'},{icon:'warning',text:'Raramente — 1 vez por semana ou menos'},{icon:'ok',text:'Quase todos os dias — meu corpo ainda responde bem'}]},{id:'manutencao',t:'Você consegue manter a ereção firme do início ao FIM da relação?',sub:'Esse fator define a eficácia do protocolo para você',o:[{icon:'sad',text:'Não — perco antes de terminar com frequência'},{icon:'warning',text:'Às vezes — falha na hora mais crítica'},{icon:'ok',text:'Sim — sem problemas para manter até o fim'}]},{id:'libido',t:'Como está seu desejo sexual nos últimos 3 meses?',sub:'O libido revela o estado atual da sua testosterona livre',o:[{icon:'sad',text:'Muito baixo — raramente sinto vontade'},{icon:'warning',text:'Baixo — preciso de muito estímulo'},{icon:'neutral',text:'Normal — nada me preocupa muito'},{icon:'fire',text:'Alto — só quero resultados físicos melhores'}]},{id:'prioridade',t:'Ser maior e ter mais controle nas relações é uma prioridade REAL para você agora?',sub:'Sua resposta define o plano ideal para o seu perfil',o:[{icon:'target',text:'SIM — quero resolver isso o quanto antes'},{icon:'clock',text:'Sim — mas posso esperar um pouco'},{icon:'search',text:'Estou apenas pesquisando por agora'}]}];
-let step=0,qIdx=0;const totalQ=QUESTIONS.length;
-function next(){if(step===0){step=1;startCarousel()}else if(step===1){step=2}else if(step===2){if(qIdx<totalQ-1){qIdx++}else{step=3;startProcessing()}}render()}
-function sel(id,val){setTimeout(next,120)}
-function finish(){window.location.href=CHECKOUT}
-function render(){document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active')});document.getElementById('s-'+step).classList.add('active');if(step===2){var q=QUESTIONS[qIdx];document.getElementById('q-num').textContent=qIdx+1;document.getElementById('p-fill').style.width=((qIdx+1)/totalQ*100)+'%';document.getElementById('q-box').innerHTML='<div class="question-text">'+q.t+'</div>'+(q.sub?'<p style="font-size:12px;color:var(--muted);font-weight:700;margin:-10px 0 16px;text-align:left">'+q.sub+'</p>':'')+'<div class="options-grid">'+q.o.map(function(o,i){return'<button class="option-btn" onclick="sel(\''+q.id+'\','+i+')">'+(ICONS[o.icon]||'')+'<span>'+o.text+'</span></button>'}).join('')+'</div>';document.querySelector('.quiz-card').scrollIntoView({behavior:'smooth',block:'start'})}}
-function startCarousel(){var sIdx=0;var slides=document.querySelectorAll('#authority-carousel .slide');setInterval(function(){slides.forEach(function(s){s.classList.remove('active')});sIdx=(sIdx+1)%slides.length;slides[sIdx].classList.add('active')},2200)}
-function animateGauge(id,pct){var offset=138.23-(pct/100)*138.23;var el=document.getElementById('gf-'+id);if(el){el.style.stroke='#22c55e';el.style.strokeDashoffset=offset}var valEl=document.getElementById('gv-'+id);if(valEl)valEl.textContent=pct+'%'}
-function activateCard(id){var card=document.getElementById('mc-'+id);if(card)card.classList.add('active')}
-function completeCard(id){var card=document.getElementById('mc-'+id);if(card){card.classList.remove('active');card.classList.add('done')}var gf=document.getElementById('gf-'+id);if(gf)gf.style.stroke='#22c55e';var st=document.getElementById('ms-'+id);if(st)st.textContent='Confirmado ✓'}
-var METRIC_DATA=[{id:1,pct:87},{id:2,pct:91},{id:3,pct:78},{id:4,pct:94}];
-var SPINNER_LABELS=['Verificando dados biométricos...','Calculando capacidade de expansão...','Analisando índice vascular...','Mapeando resposta hormonal...','Compilando diagnóstico final...'];
-function startProcessing(){var stepDelay=600;METRIC_DATA.forEach(function(m,i){setTimeout(function(){activateCard(m.id);var sl=document.getElementById('spinner-label');if(sl)sl.textContent=SPINNER_LABELS[i]},i*stepDelay);setTimeout(function(){animateGauge(m.id,m.pct)},i*stepDelay+150);setTimeout(function(){completeCard(m.id)},i*stepDelay+550)});setTimeout(function(){var sl=document.getElementById('spinner-label');if(sl)sl.textContent=SPINNER_LABELS[4]},METRIC_DATA.length*stepDelay);setTimeout(function(){var center=document.getElementById('mc-center');if(center)center.classList.add('done');var cv=document.getElementById('center-value');if(cv)cv.textContent='COMPATÍVEL — Plano Pronto ✓';var cp=document.getElementById('check-path');if(cp)cp.style.stroke='#22c55e';var sw=document.getElementById('spinner-wrap');if(sw)sw.style.opacity='0'},METRIC_DATA.length*stepDelay+800);setTimeout(function(){step=4;render()},5000)}
-setInterval(function(){var el=document.getElementById('online-count-val');if(el){var c=parseInt(el.textContent);el.textContent=Math.max(135,Math.min(172,c+Math.floor(Math.random()*6)-2))}var ae=document.getElementById('access-count');if(ae&&Math.random()>0.65){var c=parseInt(ae.textContent);ae.textContent=Math.max(42,Math.min(56,c+(Math.random()>0.5?1:-1)))}var le=document.getElementById('live-watching');if(le){var c=parseInt(le.textContent);le.textContent=Math.max(18,Math.min(31,c+Math.floor(Math.random()*3)-1))}},3500);
+/* ===================================================
+   VÍDEO DEPOIMENTO — TELA 02
+   - Inicia sempre mudo (garante autoplay)
+   - Se userInteracted === true: desmuta imediatamente
+   - Se não: mostra barra "🔊 Toque para ouvir"
+=================================================== */
+var depVid      = document.getElementById('dep-video');
+var depSoundBar = document.getElementById('dep-sound-bar');
+
+function unmuteDepVid(){
+    if(!depVid) return;
+    depVid.muted = false;
+    if(depSoundBar) depSoundBar.classList.add('hidden');
+}
+
+function startDepVideo(){
+    if(!depVid) return;
+    depVid.currentTime = 0;
+    depVid.muted = true;
+    depVid.play().catch(function(){});
+
+    if(userInteracted){
+        depVid.muted = false;
+        if(depSoundBar) depSoundBar.classList.add('hidden');
+    } else {
+        if(depSoundBar) depSoundBar.classList.remove('hidden');
+        document.addEventListener('touchstart', unmuteDepVid, {once:true, capture:true, passive:true});
+        document.addEventListener('click',      unmuteDepVid, {once:true, capture:true});
+    }
+}
+
+function stopDepVideo(){
+    document.removeEventListener('touchstart', unmuteDepVid, true);
+    document.removeEventListener('click',      unmuteDepVid, true);
+    try{ depVid.pause(); depVid.currentTime = 0; depVid.muted = true; }catch(e){}
+    if(depSoundBar) depSoundBar.classList.add('hidden');
+}
+
+function goNextS1(){ stopDepVideo(); next(); }
+
+/* ===================================================
+   VÍDEOS MINI — TELA 05 (3 depoimentos)
+=================================================== */
+var miniVideos = [
+    {vid: document.getElementById('dep-video-mini-1'), btn: document.getElementById('dep-mini-play-btn-1'), playing: false},
+    {vid: document.getElementById('dep-video-mini-2'), btn: document.getElementById('dep-mini-play-btn-2'), playing: false},
+    {vid: document.getElementById('dep-video-mini-3'), btn: document.getElementById('dep-mini-play-btn-3'), playing: false}
+];
+
+miniVideos.forEach(function(item, idx){
+    if(!item.btn) return;
+    item.btn.addEventListener('click', function(){
+        if(item.playing){
+            item.vid.pause();
+            item.btn.style.opacity = '1';
+            item.playing = false;
+        } else {
+            miniVideos.forEach(function(other, i){
+                if(i !== idx && other.playing){
+                    other.vid.pause();
+                    other.btn.style.opacity = '1';
+                    other.playing = false;
+                }
+            });
+            item.vid.muted = false;
+            item.vid.play().catch(function(){
+                item.vid.muted = true;
+                item.vid.play().catch(function(){});
+            });
+            item.btn.style.opacity = '0';
+            item.playing = true;
+        }
+    });
+});
+
+function stopAllMiniVideos(){
+    miniVideos.forEach(function(item){
+        if(!item.vid) return;
+        try{ item.vid.pause(); item.vid.currentTime = 0; }catch(e){}
+        if(item.btn) item.btn.style.opacity = '1';
+        item.playing = false;
+    });
+}
+
+/* ===================================================
+   NAVEGAÇÃO E QUIZ
+=================================================== */
+var ICONS = {
+    sad:    '<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5-2 4-2 4 2 4 2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
+    warning:'<svg viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    neutral:'<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="8" y1="15" x2="16" y2="15"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
+    ok:     '<svg viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    fire:   '<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M12 2c0 6-8 8-8 14a8 8 0 0016 0c0-4-2-7-4-9-1 3-4 4-4 4z"/></svg>',
+    clock:  '<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+    search: '<svg viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+    target: '<svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>'
+};
+
+var QUESTIONS = [
+    {id:'rigidez',   t:'Com que frequência você consegue atingir rigidez TOTAL durante uma relação sexual?', sub:'Esse dado revela seu nível de vascularização peniana', o:[{icon:'sad',text:'Quase nunca — fico mole antes de terminar'},{icon:'warning',text:'Raramente — acontece mas é instável'},{icon:'neutral',text:'Às vezes — depende do dia'},{icon:'ok',text:'Frequentemente — só falha ocasionalmente'},{icon:'fire',text:'Sempre — sem nenhuma dificuldade'}]},
+    {id:'matinal',   t:'Você ainda acorda com ereção matinal (o "sinal de testosterona")?', sub:'Indicador clínico direto dos seus níveis hormonais', o:[{icon:'sad',text:'Nunca — faz muito tempo que não acontece'},{icon:'warning',text:'Raramente — 1 vez por semana ou menos'},{icon:'ok',text:'Quase todos os dias — meu corpo ainda responde bem'}]},
+    {id:'manutencao',t:'Você consegue manter a ereção firme do início ao FIM da relação?', sub:'Esse fator define a eficácia do protocolo para você', o:[{icon:'sad',text:'Não — perco antes de terminar com frequência'},{icon:'warning',text:'Às vezes — falha na hora mais crítica'},{icon:'ok',text:'Sim — sem problemas para manter até o fim'}]},
+    {id:'libido',    t:'Como está seu desejo sexual nos últimos 3 meses?', sub:'O libido revela o estado atual da sua testosterona livre', o:[{icon:'sad',text:'Muito baixo — raramente sinto vontade'},{icon:'warning',text:'Baixo — preciso de muito estímulo'},{icon:'neutral',text:'Normal — nada me preocupa muito'},{icon:'fire',text:'Alto — só quero resultados físicos melhores'}]},
+    {id:'prioridade',t:'Ser maior e ter mais controle nas relações é uma prioridade REAL para você agora?', sub:'Sua resposta define o plano ideal para o seu perfil', o:[{icon:'target',text:'SIM — quero resolver isso o quanto antes'},{icon:'clock',text:'Sim — mas posso esperar um pouco'},{icon:'search',text:'Estou apenas pesquisando por agora'}]}
+];
+
+var step = 0, qIdx = 0, totalQ = QUESTIONS.length;
+
+function next(){
+    if(step === 0){ step = 1; }
+    else if(step === 1){ step = 2; }
+    else if(step === 2){
+        if(qIdx < totalQ - 1){ qIdx++; }
+        else{ step = 3; startProcessing(); }
+    }
+    render();
+}
+
+function sel(id, val){ setTimeout(next, 120); }
+function finish(){ stopAllMiniVideos(); window.location.href = CHECKOUT; }
+
+function render(){
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+    document.getElementById('s-' + step).classList.add('active');
+
+    if(step === 1){ setTimeout(startDepVideo, 150); }
+    else          { stopDepVideo(); }
+
+    if(step === 2){
+        var q = QUESTIONS[qIdx];
+        document.getElementById('q-num').textContent = qIdx + 1;
+        document.getElementById('p-fill').style.width = ((qIdx + 1) / totalQ * 100) + '%';
+        document.getElementById('q-box').innerHTML =
+            '<div class="question-text">' + q.t + '</div>' +
+            (q.sub ? '<p style="font-size:12px;color:var(--muted);font-weight:700;margin:-10px 0 16px;text-align:left">' + q.sub + '</p>' : '') +
+            '<div class="options-grid">' +
+            q.o.map(function(o, i){
+                return '<button class="option-btn" onclick="sel(\'' + q.id + '\',' + i + ')">' + (ICONS[o.icon] || '') + '<span>' + o.text + '</span></button>';
+            }).join('') +
+            '</div>';
+        document.querySelector('.quiz-card').scrollIntoView({behavior:'smooth', block:'start'});
+    }
+}
+
+/* ===================================================
+   ANIMAÇÕES DE ANÁLISE
+=================================================== */
+var METRIC_DATA    = [{id:1,pct:87},{id:2,pct:91},{id:3,pct:78},{id:4,pct:94}];
+var SPINNER_LABELS = ['Verificando dados biométricos...','Calculando capacidade de expansão...','Analisando índice vascular...','Mapeando resposta hormonal...','Compilando diagnóstico final...'];
+
+function animateGauge(id, pct){
+    var offset = 138.23 - (pct/100)*138.23;
+    var el = document.getElementById('gf-'+id); if(el){ el.style.stroke='#22c55e'; el.style.strokeDashoffset=offset; }
+    var valEl = document.getElementById('gv-'+id); if(valEl) valEl.textContent = pct+'%';
+}
+function activateCard(id){ var c=document.getElementById('mc-'+id); if(c) c.classList.add('active'); }
+function completeCard(id){
+    var c=document.getElementById('mc-'+id); if(c){ c.classList.remove('active'); c.classList.add('done'); }
+    var gf=document.getElementById('gf-'+id); if(gf) gf.style.stroke='#22c55e';
+    var st=document.getElementById('ms-'+id); if(st) st.textContent='Confirmado ✓';
+}
+function startProcessing(){
+    var d = 600;
+    METRIC_DATA.forEach(function(m, i){
+        setTimeout(function(){ activateCard(m.id); var sl=document.getElementById('spinner-label'); if(sl) sl.textContent=SPINNER_LABELS[i]; }, i*d);
+        setTimeout(function(){ animateGauge(m.id, m.pct); }, i*d+150);
+        setTimeout(function(){ completeCard(m.id); }, i*d+550);
+    });
+    setTimeout(function(){ var sl=document.getElementById('spinner-label'); if(sl) sl.textContent=SPINNER_LABELS[4]; }, METRIC_DATA.length*d);
+    setTimeout(function(){
+        var center=document.getElementById('mc-center'); if(center) center.classList.add('done');
+        var cv=document.getElementById('center-value');  if(cv) cv.textContent='COMPATÍVEL — Plano Pronto ✓';
+        var cp=document.getElementById('check-path');    if(cp) cp.style.stroke='#22c55e';
+        var sw=document.getElementById('spinner-wrap');  if(sw) sw.style.opacity='0';
+    }, METRIC_DATA.length*d+800);
+    setTimeout(function(){ step=4; render(); }, 5000);
+}
+
+/* ===================================================
+   CONTADORES AO VIVO
+=================================================== */
+setInterval(function(){
+    var el=document.getElementById('online-count-val');
+    if(el){ var c=parseInt(el.textContent); el.textContent=Math.max(135,Math.min(172,c+Math.floor(Math.random()*6)-2)); }
+    var ae=document.getElementById('access-count');
+    if(ae&&Math.random()>0.65){ var c=parseInt(ae.textContent); ae.textContent=Math.max(42,Math.min(56,c+(Math.random()>0.5?1:-1))); }
+    var le=document.getElementById('live-watching');
+    if(le){ var c=parseInt(le.textContent); le.textContent=Math.max(18,Math.min(31,c+Math.floor(Math.random()*3)-1)); }
+},3500);
 
 render();
 </script>
